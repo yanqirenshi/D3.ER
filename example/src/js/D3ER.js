@@ -99,6 +99,9 @@ export default class D3ER {
     getSvgElement () {
         return this.getSvg().d3Element();
     }
+    svgSize (w, h) {
+        this.getSvg().size(w, h);
+    }
     /* ******** */
     /*  Layers  */
     /* ******** */
