@@ -1,4 +1,4 @@
-export default class ErEdge {
+export default class Edge {
     drawCore (selection) {
         let val = (port, name) => {
             try {

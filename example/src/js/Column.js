@@ -1,4 +1,4 @@
-export default class ErTableColumn {
+export default class Column {
     constructor(param) {
         this._padding = param.padding ? param.padding : 0;
         this._values  = param.values;

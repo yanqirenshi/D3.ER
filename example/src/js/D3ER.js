@@ -1,6 +1,9 @@
 import D3Svg from '@yanqirenshi/d3.svg';
 
-import Er from './Er.js';
+import DataManeger from './DataManeger.js';
+
+import Table from './Table.js';
+import Edge  from './Edge.js';
 
 export default class D3ER {
     constructor () {
@@ -23,7 +26,49 @@ export default class D3ER {
 
         // const svg = this.getSvgElement();
 
+        this._table = null;
+
+        this._values    = this.initValues(params);
+        this._callbacks = this.initCallbacks(params);
+
         return this;
+    }
+    initValues (options) {
+        let default_values = {
+            table: {
+                columns: {
+                    column: {
+                        value: 'logical_name', // 'physical_name'
+                    }
+                },
+            },
+        };
+
+        if (!options || !options.values)
+            return default_values;
+
+        return Object.assign({}, options.values);
+    }
+    initCallbacks (options) {
+        let default_callbacks = {
+            table: {
+                move: {
+                    end: (d) => {}
+                },
+                resize: (table) => {},
+                header: {
+                    click: (d) => {}
+                },
+                columns: {
+                    click: (d) => {}
+                },
+            }
+        };
+
+        if (!options || !options.callbacks)
+            return default_callbacks;
+
+        return options.callbacks;
     }
     /* ******** */
     /*  SVG     */
@@ -95,22 +140,49 @@ export default class D3ER {
     /* ******** */
     /*  Draw    */
     /* ******** */
-    draw (entities) {
-        const state = {...entities};
+    drawEdges (state) {
+        let svg = this.getSvgElement();
 
-        new Er().drawTables(this.getSvg(), state);
+        this._Edge = new Edge();
+        this._Edge.draw(svg, state.edges.list);
+    }
+    moveEdges (tables) {
+        let svg = this.getSvgElement();
+
+        this._Edge = new Edge();
+
+        let x = ([[]].concat(tables)).reduce((a,b) => {
+            return b._edges ? a.concat(b._edges) : a;
+        });
+
+        this._Edge.moveEdges(svg, x);
+    }
+    drawTables (d3svg, state) {
+        if (!this._table)
+            this._table = new Table({
+                d3svg: this.getSvg(),
+                values: this._values,
+                callbacks: this._callbacks.table,
+            });
+
+        let tables = state.tables.list;
+        this._table.draw(tables);
+
+        return tables;
+    }
+    draw (entities) {
+        let d3svg = this.getSvg();
+
+        this.drawEdges(entities);
+
+        let tables = this.drawTables(d3svg, entities);
+
+        this.moveEdges(tables);
+
     }
     /* ******** */
     /*  Data    */
     /* ******** */
-    entities (data) {
-        let state = {};
-
-        return new Er().responseNode2Data(data, state);
-    }
-    relationships (data, ports) {
-        return new Er().responseEdge2Data(data, ports);
-    }
     data (data) {
         if (arguments.length===0)
             return {
@@ -118,34 +190,15 @@ export default class D3ER {
                 relationships: [],
             };
 
-        let entities = this.entities(data.entities);
-        let edges = this.relationships(entities.relashonships,
-                                       entities.ports);
 
-        entities.edges = edges;
+        let erdm = new DataManeger();
+
+        let entities = erdm.responseNode2Data(data, {});
+
+        entities.edges = erdm.responseEdge2Data(entities.relashonships,
+                                                entities.ports);
 
         this.draw(entities);
-
-        return this;
-    }
-    data_bk (data) {
-        if (arguments.length===0)
-            return this._nodes.list;
-
-        this.importNodes(data.nodes);
-        this.importEdges(data.edges);
-
-        this.makePorts(this._edges.list);
-
-        // fitting ports
-        for (let port of this._ports.list)
-            this.fittingPort(port);
-
-        // fitting edges
-        for (let edge of this._edges.list)
-            this.fittingEdge(edge);
-
-        this.draw();
 
         return this;
     }

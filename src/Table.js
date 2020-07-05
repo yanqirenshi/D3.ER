@@ -1,10 +1,10 @@
 import * as d3 from 'd3';
 
-import ErTableColumn from './ErTableColumn.js';
-import ErEdge from './ErEdge.js';
-import ErPort from './ErPort.js';
+import Column from './Column.js';
+import Edge from './Edge.js';
+import Port from './Port.js';
 
-export default class ErTable {
+export default class Table {
     constructor(options) {
         this._d3svg = options.d3svg;
         this._padding = 11;
@@ -12,12 +12,12 @@ export default class ErTable {
         this._values    = options.values;
         this._callbacks = options.callbacks;
 
-        this._TableColumn = new ErTableColumn({
+        this._Column = new Column({
             padding: this._padding,
             values:  this._values,
         });
-        this._Edge = new ErEdge();
-        this._Port = new ErPort();
+        this._Edge = new Edge();
+        this._Port = new Port();
     }
     /* **************************************************************** *
      *  util
@@ -70,7 +70,7 @@ export default class ErTable {
     }
     /// base
     baseHeight (d) {
-        return this.headerHight(d) + this._TableColumn.columnsHeight(d);
+        return this.headerHight(d) + this._Column.columnsHeight(d);
     }
     /* **************************************************************** *
      *  Positioning
@@ -198,7 +198,7 @@ export default class ErTable {
 
         this.drawBase(g);
 
-        this._TableColumn.draw(g, this, {
+        this._Column.draw(g, this, {
             click: (d) => {
                 this.callCallbak(this, 'columns.click', d);
                 d3.event.stopPropagation();

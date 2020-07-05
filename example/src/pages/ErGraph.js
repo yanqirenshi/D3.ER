@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import D3ER from '../js/D3ER.js';
 
 import ENTITIES      from '../data/ENTITIES.js';
-import RELATIONSHIPS from '../data/RELATIONSHIPS.js';
 
 let last_effect = null;
 
@@ -26,10 +25,7 @@ function ErGraph () {
                 },
             });
 
-        d3er.data({
-            entities: ENTITIES,
-            relationships: RELATIONSHIPS,
-        });
+        d3er.data(ENTITIES);
 
         last_effect = new Date();
     });
