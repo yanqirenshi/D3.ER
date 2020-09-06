@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import D3ER from '../js/D3ER.js';
 
-import ENTITIES      from '../data/ENTITIES.js';
+import ER_DATA from '../data/ER_DATA.js';
 
 let last_effect = null;
 
@@ -46,7 +46,7 @@ function ErGraph () {
         if(!last_effect)
             initD3er(d3er);
 
-        d3er.data(ENTITIES);
+        d3er.data(ER_DATA);
 
         window.addEventListener('resize', () => {
             resizeSvg(d3er);

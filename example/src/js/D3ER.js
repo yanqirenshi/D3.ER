@@ -16,6 +16,8 @@ export default class D3ER {
         this._d3svg = null;
         this._layerForeground = null;
         this._layerBackground = null;
+
+        this.erdm = new DataManeger();
     }
     init (params) {
         this.selector = params.svg.selector;
@@ -173,15 +175,19 @@ export default class D3ER {
 
         return tables;
     }
-    draw (entities) {
+    draw (nodes, edges) {
+        const graph_data = {
+            ...nodes,
+            ...{ edges: edges },
+        };
+
         let d3svg = this.getSvg();
 
-        this.drawEdges(entities);
+        this.drawEdges(graph_data);
 
-        let tables = this.drawTables(d3svg, entities);
+        let tables = this.drawTables(d3svg, graph_data);
 
         this.moveEdges(tables);
-
     }
     /* ******** */
     /*  Data    */
@@ -193,15 +199,11 @@ export default class D3ER {
                 relationships: [],
             };
 
+        const erdm = this.erdm;
+        const nodes = erdm.buildNodes(data);
+        const edges = erdm.buildEdges(nodes.relashonships, nodes.ports);
 
-        let erdm = new DataManeger();
-
-        let entities = erdm.responseNode2Data(data, {});
-
-        entities.edges = erdm.responseEdge2Data(entities.relashonships,
-                                                entities.ports);
-
-        this.draw(entities);
+        this.draw(nodes, edges);
 
         return this;
     }

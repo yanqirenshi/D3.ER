@@ -16,6 +16,7 @@ export default class Table {
             padding: this._padding,
             values:  this._values,
         });
+
         this._Edge = new Edge();
         this._Port = new Port();
     }
