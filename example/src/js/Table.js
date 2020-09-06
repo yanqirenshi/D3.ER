@@ -1,13 +1,31 @@
 import * as d3 from 'd3';
 
+import Pool from './Pool';
+
 import Column from './Column.js';
-import Edge from './Edge.js';
+import Relashonship from './Relashonship';
 import Port from './Port.js';
 
 export default class Table {
     constructor(options) {
-        this._d3svg = options.d3svg;
+        this._d3svg = null;
         this._padding = 11;
+
+        this._values    = {};
+        this._callbacks = {};
+
+        this._Column = null;
+
+        this.port = new Port();
+
+        this.pool = new Pool();
+        this.relashonship = new Relashonship();
+
+        if (options)
+            this.init(options);
+    }
+    init (options) {
+        this._d3svg = options.d3svg;
 
         this._values    = options.values;
         this._callbacks = options.callbacks;
@@ -16,9 +34,6 @@ export default class Table {
             padding: this._padding,
             values:  this._values,
         });
-
-        this._Edge = new Edge();
-        this._Port = new Port();
     }
     /* **************************************************************** *
      *  util
@@ -51,9 +66,9 @@ export default class Table {
     /* **************************************************************** *
      *  Data manegement
      * **************************************************************** */
-    ///
-    /// 未実装
-    ///
+    build (list) {
+        return this.pool.list2pool(list);
+    }
     /* **************************************************************** *
      *  Sizing
      * **************************************************************** */
@@ -85,7 +100,8 @@ export default class Table {
     removeAll () {
         let svg = this._d3svg._d3_element;
 
-        this._Edge.removeEdgeAll(svg);
+        this.relashonship.removeEdgeAll(svg);
+
         this.removeGAll(svg);
     }
     removeGAll (svg) {
@@ -174,8 +190,7 @@ export default class Table {
                 return 'translate('+d.x+','+d.y+')';
             });
 
-        this._Edge.moveEdges(svg,
-                             (tables[0]._edges || []));// iwasaki
+        this.relashonship.moveEdges(svg, (tables[0]._edges || []));
     }
     resize () {
         for (var k in this.resize_tables) {
@@ -211,7 +226,7 @@ export default class Table {
 
         this.drawHeader(g);
 
-        this._Port.draw(g);
+        this.port.draw(g);
 
         this.resize();
     }

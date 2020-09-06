@@ -1,4 +1,18 @@
+import Pool from './Pool';
+
 export default class Port {
+    constructor () {
+        this.pool = new Pool();
+    }
+    /* **************************************************************** *
+     *  Data manegement
+     * **************************************************************** */
+    build (list) {
+        return this.pool.list2pool(list);
+    }
+    /* **************************************************************** *
+     *  Draw
+     * **************************************************************** */
     calX (d) {
         let column_instance = d._column_instance;
 

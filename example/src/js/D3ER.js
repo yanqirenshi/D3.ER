@@ -2,8 +2,8 @@ import D3Svg from '@yanqirenshi/d3.svg';
 
 import DataManeger from './DataManeger.js';
 
-import Table from './Table.js';
-import Edge  from './Edge.js';
+import Table from './Table';
+import Relashonship from './Relashonship';
 
 export default class D3ER {
     constructor () {
@@ -18,6 +18,7 @@ export default class D3ER {
         this._layerBackground = null;
 
         this.erdm = new DataManeger();
+        this.relashonship = new Relashonship();
     }
     init (params) {
         this.selector = params.svg.selector;
@@ -148,19 +149,16 @@ export default class D3ER {
     drawEdges (state) {
         let svg = this.getSvgElement();
 
-        this._Edge = new Edge();
-        this._Edge.draw(svg, state.edges.list);
+        this.relashonship.draw(svg, state.edges.list);
     }
     moveEdges (tables) {
         let svg = this.getSvgElement();
-
-        this._Edge = new Edge();
 
         let x = ([[]].concat(tables)).reduce((a,b) => {
             return b._edges ? a.concat(b._edges) : a;
         });
 
-        this._Edge.moveEdges(svg, x);
+        this.relashonship.moveEdges(svg, x);
     }
     drawTables (d3svg, state) {
         if (!this._table)
@@ -175,11 +173,7 @@ export default class D3ER {
 
         return tables;
     }
-    draw (nodes, edges) {
-        const graph_data = {
-            ...nodes,
-            ...{ edges: edges },
-        };
+    draw (graph_data) {
 
         let d3svg = this.getSvg();
 
@@ -194,16 +188,11 @@ export default class D3ER {
     /* ******** */
     data (data) {
         if (arguments.length===0)
-            return {
-                entities: [],
-                relationships: [],
-            };
+            return this;
 
-        const erdm = this.erdm;
-        const nodes = erdm.buildNodes(data);
-        const edges = erdm.buildEdges(nodes.relashonships, nodes.ports);
+        const graph_data = this.erdm.buldData(data);
 
-        this.draw(nodes, edges);
+        this.draw(graph_data);
 
         return this;
     }

@@ -1,8 +1,21 @@
+import Pool from './Pool';
+
 export default class Column {
     constructor(param) {
         this._padding = param.padding ? param.padding : 0;
         this._values  = param.values;
+
+        this.pool = new Pool();
     }
+    /* **************************************************************** *
+     *  Data manegement
+     * **************************************************************** */
+    build (list) {
+        return new Pool().list2poolWithIndex(list);
+    }
+    /* **************************************************************** *
+     *  Draw
+     * **************************************************************** */
     columnsWidth (d) {
         let padding = this._padding;
         return d.w - padding * 2;

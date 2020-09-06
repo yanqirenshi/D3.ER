@@ -1,4 +1,15 @@
-export default class Edge {
+import Pool from './Pool';
+
+export default class Relashonship {
+    constructor () {
+        this.pool = new Pool();
+    }
+    /* **************************************************************** *
+     *  Data manegement
+     * **************************************************************** */
+    build (list) {
+        return new Pool().list2poolWithIndex(list);
+    }
     checkClassOfFromTo (r) {
         return (r.from_class==='PORT-ER-OUT' || r.from_class==='PORT-ER-IN')
             && (r.to_class==='PORT-ER-OUT' || r.to_class==='PORT-ER-IN');

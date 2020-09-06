@@ -1,51 +1,15 @@
-import Edge from './Edge';
+import Relashonship from './Relashonship';
+import Pool from './Pool';
+import Table from './Table';
+import Port from './Port';
+import ColumnInstance from './ColumnInstance.js';
 
 export default class DataManeger {
     constructor () {
-        this.edge = new Edge();
-    }
-    list2pool (list) {
-        let ht = {};
-        for (var i in list) {
-            let data = list[i];
-            ht[data._id] = data;
-        }
-        return {ht: ht, list: list};
-    }
-    list2poolWithIndex (list) {
-        let ht = {};
-        let ht_from = {};
-        let ht_to = {};
-
-        for (var i in list) {
-            let data = list[i];
-            let _id = data._id;
-
-            let from_id = data.from_id;
-            let to_id = data.to_id;
-
-            // _id
-            ht[_id] = data;
-
-            // from_id
-            if (!ht_from[from_id])
-                ht_from[from_id] = {};
-            ht_from[from_id][to_id] = data;
-
-            // to_id
-            if (!ht_to[to_id])
-                ht_to[to_id] = {};
-            ht_to[to_id][from_id] = data;
-        }
-
-        return {
-            ht: ht,
-            list: list,
-            from: ht_from,
-            to: ht_to
-        };
-    }
-    makeEdges (relashonships, ports) {
+        this.table = new Table();
+        this.port = new Port();
+        this.column_instance = new ColumnInstance();
+        this.relashonship = new Relashonship();
     }
     injectTable2ColumnInstances (tables, column_instances, relashonships) {
         let table_ht = tables.ht;
@@ -85,33 +49,15 @@ export default class DataManeger {
                 }
         }
     }
-
     /* **************************************************************** *
      *  Respons data 2 Graph data
      * **************************************************************** */
-    buildNodes (response) {
-        let relashonships    = this.list2poolWithIndex(response.RELASHONSHIPS);
-        let tables           = this.list2pool(response.TABLES);
-        let column_instances = this.list2pool(response.COLUMN_INSTANCES);
-        let ports            = this.list2pool(response.PORTS);
-
-        this.injectTable2ColumnInstances(tables, column_instances, relashonships);
-        this.injectColumnInstances2Ports (column_instances, ports, relashonships);
-
-        return {
-            columns:          this.list2pool(response.COLUMNS),
-            tables:           tables,
-            column_instances: column_instances,
-            ports:            ports,
-            relashonships:    relashonships,
-        };
-    }
     buildEdges (relashonships, ports) {
         let ports_ht = ports.ht;
 
         let out = [];
 
-        const edge = this.edge;
+        const edge = this.relashonship;
 
         for (let r of relashonships.list) {
             if (!edge.checkClassOfFromTo(r))
@@ -122,7 +68,28 @@ export default class DataManeger {
             out.push(r);
         }
 
-        return this.list2pool(out);
+        return new Pool().list2pool(out);
+    }
+    buldData (response) {
+        let relashonships    = this.relashonship.build(response.RELASHONSHIPS);
+        let tables           = this.table.build(response.TABLES);
+        let column_instances = this.column_instance.build(response.COLUMN_INSTANCES);
+        let ports            = this.port.build(response.PORTS);
+
+        this.injectTable2ColumnInstances(tables, column_instances, relashonships);
+        this.injectColumnInstances2Ports (column_instances, ports, relashonships);
+
+        let edges = this.buildEdges(relashonships, ports);
+
+        return {
+            columns:          new Pool().list2pool(response.COLUMNS),
+            tables:           tables,
+            column_instances: column_instances,
+            ports:            ports,
+            relashonships:    relashonships,
+            edges:            edges,
+        };
+
     }
     /* **************************************************************** *
      *  Import Data (未実装)
