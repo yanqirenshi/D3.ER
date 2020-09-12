@@ -1,12 +1,12 @@
 import Relashonship from './Relashonship';
 import Pool from './Pool';
-import Table from './Table';
+import Entity from './Entity';
 import Port from './Port';
 import ColumnInstance from './ColumnInstance.js';
 
 export default class DataManeger {
     constructor () {
-        this.table = new Table();
+        this.table = new Entity();
         this.port = new Port();
         this.column_instance = new ColumnInstance();
         this.relashonship = new Relashonship();

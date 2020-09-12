@@ -122,4 +122,11 @@ export default class Column {
                 if (callback.dblclick) callback.dblclick(d);
             });
     }
+    resize (g, table) {
+        g.selectAll('rect.columns')
+            .filter((d) => { return d._id===table._id; })
+            .attr('width', (d) => {
+                return d.w - 22;
+            });
+    }
 }

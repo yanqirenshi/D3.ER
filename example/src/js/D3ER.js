@@ -2,7 +2,7 @@ import D3Svg from '@yanqirenshi/d3.svg';
 
 import DataManeger from './DataManeger.js';
 
-import Table from './Table';
+import Entity from './Entity';
 import Relashonship from './Relashonship';
 
 export default class D3ER {
@@ -55,15 +55,23 @@ export default class D3ER {
     initCallbacks (options) {
         let default_callbacks = {
             table: {
-                move: {
-                    end: (d) => {}
+                move: (table) => {
+                    const layer = this.getLayerRelationships();
+
+                    this.relashonship.moveEdges(layer, (table._edges || []));
+                },
+                move_end: (d) => {
                 },
                 resize: (table) => {},
                 header: {
-                    click: (d) => {}
+                    click: (d) => {
+                        console.log('Click header.');
+                    }
                 },
                 columns: {
-                    click: (d) => {}
+                    click: (d) => {
+                        console.log('Click column.');
+                    }
                 },
             }
         };
@@ -111,7 +119,9 @@ export default class D3ER {
     makeLayers () {
         const layers = [
             { id: 1, name: 'background' },
-            { id: 2, name: 'foreground' },
+            { id: 2, name: 'relationships' },
+            { id: 3, name: 'entities' },
+            { id: 4, name: 'foreground' },
         ];
 
         this.getSvgElement()
@@ -122,6 +132,26 @@ export default class D3ER {
             .attr('class', (d) => {
                 return 'layer ' + d.name;
             });
+    }
+    getLayerEntities () {
+        if (this._layerEntities)
+            return this._layerEntities;
+
+        let svg = this.getSvgElement();
+
+        this._layerEntities = svg.select('g.layer.entities');
+
+        return this._layerEntities;
+    }
+    getLayerRelationships () {
+        if (this._layerRelationships)
+            return this._layerRelationships;
+
+        let svg = this.getSvgElement();
+
+        this._layerRelationships = svg.select('g.layer.relationships');
+
+        return this._layerRelationships;
     }
     getLayerForeground () {
         if (this._layerForeground)
@@ -147,41 +177,41 @@ export default class D3ER {
     /*  Draw    */
     /* ******** */
     drawEdges (state) {
-        let svg = this.getSvgElement();
+        let layer = this.getLayerRelationships();
 
-        this.relashonship.draw(svg, state.edges.list);
+        this.relashonship.draw(layer, state.edges.list);
     }
-    moveEdges (tables) {
+    moveEdges (entities) {
         let svg = this.getSvgElement();
 
-        let x = ([[]].concat(tables)).reduce((a,b) => {
+        let x = ([[]].concat(entities)).reduce((a,b) => {
             return b._edges ? a.concat(b._edges) : a;
         });
 
         this.relashonship.moveEdges(svg, x);
     }
-    drawTables (d3svg, state) {
+    drawEntitiies (d3svg, state) {
         if (!this._table)
-            this._table = new Table({
-                d3svg: this.getSvg(),
+            this._table = new Entity({
+                place: this.getLayerEntities(),
                 values: this._values,
                 callbacks: this._callbacks.table,
             });
 
+        let layer = this.getLayerEntities();
+
         let tables = state.tables.list;
-        this._table.draw(tables);
+        this._table.draw(layer, tables);
 
         return tables;
     }
     draw (graph_data) {
-
         let d3svg = this.getSvg();
 
+        let entities = this.drawEntitiies(d3svg, graph_data);
+
         this.drawEdges(graph_data);
-
-        let tables = this.drawTables(d3svg, graph_data);
-
-        this.moveEdges(tables);
+        this.moveEdges(entities);
     }
     /* ******** */
     /*  Data    */
