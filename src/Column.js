@@ -1,8 +1,21 @@
+import Pool from './Pool';
+
 export default class Column {
     constructor(param) {
         this._padding = param.padding ? param.padding : 0;
         this._values  = param.values;
+
+        this.pool = new Pool();
     }
+    /* **************************************************************** *
+     *  Data manegement
+     * **************************************************************** */
+    build (list) {
+        return new Pool().list2poolWithIndex(list);
+    }
+    /* **************************************************************** *
+     *  Draw
+     * **************************************************************** */
     columnsWidth (d) {
         let padding = this._padding;
         return d.w - padding * 2;
@@ -107,6 +120,13 @@ export default class Column {
                 if (callback.click) callback.click(d);
             }).on("dblclick", (d) => {
                 if (callback.dblclick) callback.dblclick(d);
+            });
+    }
+    resize (g, table) {
+        g.selectAll('rect.columns')
+            .filter((d) => { return d._id===table._id; })
+            .attr('width', (d) => {
+                return d.w - 22;
             });
     }
 }

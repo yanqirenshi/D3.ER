@@ -1,23 +1,37 @@
 import * as d3 from 'd3';
 
+import Pool from './Pool';
+
 import Column from './Column.js';
-import Edge from './Edge.js';
 import Port from './Port.js';
 
-export default class Table {
+export default class Entity {
     constructor(options) {
-        this._d3svg = options.d3svg;
+        this._place = null;
         this._padding = 11;
+
+        this._values    = {};
+        this._callbacks = {};
+
+        this._Column = null;
+
+        this.port = new Port();
+
+        this.pool = new Pool();
+
+        if (options)
+            this.init(options);
+    }
+    init (options) {
+        this._place = options.place;
 
         this._values    = options.values;
         this._callbacks = options.callbacks;
 
-        this._Column = new Column({
+        this.column = new Column({
             padding: this._padding,
             values:  this._values,
         });
-        this._Edge = new Edge();
-        this._Port = new Port();
     }
     /* **************************************************************** *
      *  util
@@ -50,9 +64,9 @@ export default class Table {
     /* **************************************************************** *
      *  Data manegement
      * **************************************************************** */
-    ///
-    /// 未実装
-    ///
+    build (list) {
+        return this.pool.list2pool(list);
+    }
     /* **************************************************************** *
      *  Sizing
      * **************************************************************** */
@@ -70,7 +84,7 @@ export default class Table {
     }
     /// base
     baseHeight (d) {
-        return this.headerHight(d) + this._Column.columnsHeight(d);
+        return this.headerHight(d) + this.column.columnsHeight(d);
     }
     /* **************************************************************** *
      *  Positioning
@@ -81,12 +95,6 @@ export default class Table {
     /* **************************************************************** *
      *  Draw ※これはインスタンスメソッドより、クラスメソッド的な。
      * **************************************************************** */
-    removeAll () {
-        let svg = this._d3svg._d3_element;
-
-        this._Edge.removeEdgeAll(svg);
-        this.removeGAll(svg);
-    }
     removeGAll (svg) {
         svg.selectAll('g.table')
             .data([], (d) => { return d._id; })
@@ -140,7 +148,11 @@ export default class Table {
                 return d.w;
             })
             .attr('height', (d) => {
-                return this.baseHeight(d);
+                const h = this.baseHeight(d);
+
+                d.h = h;
+
+                return h;
             })
             .attr('fill', '#f8f8f8');
     }
@@ -160,12 +172,12 @@ export default class Table {
             .attr('x', (d) => { return d.x; })
             .attr('y', (d) => { return d.y; })
             .call(d3.drag()
-                  .on("start", (d) => { this.moveTableStart(d); })
-                  .on("drag",  (d) => { this.moveTable(d); })
-                  .on("end",   (d) => { this.moveTableEnd(d); }));
+                  .on("start", (d) => { this.moveEntityStart(d); })
+                  .on("drag",  (d) => { this.moveEntity(d); })
+                  .on("end",   (d) => { this.moveEntityEnd(d); }));
     }
     move(tables) {
-        let svg = this._d3svg._d3_element;
+        let svg = this._place;
 
         svg.selectAll('g.table')
             .data(tables, (d)=>{ return d._id; })
@@ -173,10 +185,9 @@ export default class Table {
                 return 'translate('+d.x+','+d.y+')';
             });
 
-        this._Edge.moveEdges(svg,
-                             (tables[0]._edges || []));// iwasaki
+        this._callbacks.move(tables[0]);
     }
-    resize () {
+    resize (g) {
         for (var k in this.resize_tables) {
             let data = this.resize_tables[k];
             let table = data.table;
@@ -185,20 +196,34 @@ export default class Table {
 
             table.w = data.max_w;
 
+            let table_selection =
+                g.select('rect.base')
+                .filter((d) => { return d._id===table._id; });
+
+            this.column.resize(g, table);
+
+            g.select('rect.header')
+                .filter((d) => { return d._id===table._id; })
+                .attr('width',  (d) => { return d.w - 22; });
+
+            table_selection.attr('width', (d) => { return d.w; });
+
             this.callCallbak(this, 'resize', table);
         }
     }
-    draw (data) {
+    draw (place, data) {
         this.resize_tables = {};
 
-        let svg = this._d3svg._d3_element;
+        let svg = this._place;
 
         this.removeG(svg, data);
         let g = this.drawG(svg, data);
 
+        this.port.draw(g);
+
         this.drawBase(g);
 
-        this._Column.draw(g, this, {
+        this.column.draw(g, this, {
             click: (d) => {
                 this.callCallbak(this, 'columns.click', d);
                 d3.event.stopPropagation();
@@ -210,27 +235,24 @@ export default class Table {
 
         this.drawHeader(g);
 
-        this._Port.draw(g);
+        this.resize(g);
 
-        this.resize();
-    }
-    reDraw (data) {
-        // let svg = this._d3svg._d3_element;
+        this.port.draw(g);
     }
     /* **************************************************************** *
      *  Drag & Drop
      * **************************************************************** */
-    moveTableStart (table) {
+    moveEntityStart (table) {
         table.drag = {
             start: {x: table.x, y:table.y}
         };
     }
-    moveTable (table) {
+    moveEntity (table) {
         table.x = Math.floor(table.x + d3.event.dx);
         table.y = Math.floor(table.y + d3.event.dy);
         this.move([table]);
     }
-    moveTableEnd (table) {
+    moveEntityEnd (table) {
         this.callCallbak(this, 'move.end', table);
         delete table.drag;
     }
