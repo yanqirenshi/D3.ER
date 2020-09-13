@@ -1,11 +1,19 @@
 export default class Pool {
-    list2pool (list) {
+    list2pool (list, builder) {
         let ht = {};
 
-        for (var i in list) {
-            let data = list[i];
+        if (builder) {
+            for (let i in list) {
+                let data = builder(list[i]);
 
-            ht[data._id] = data;
+                ht[data._id] = data;
+            }
+        } else {
+            for (let i in list) {
+                let data = list[i];
+
+                ht[data._id] = data;
+            }
         }
 
         return {ht: ht, list: list};

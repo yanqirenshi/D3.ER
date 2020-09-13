@@ -1,4 +1,5 @@
 import Pool from './Pool';
+import * as d3 from 'd3';
 
 import Geometry from './Geometry';
 
@@ -11,7 +12,19 @@ export default class Port {
      *  Data manegement
      * **************************************************************** */
     build (list) {
-        return this.pool.list2pool(list);
+        return this.pool.list2pool(list, (d) => {
+            if (!d.cardinality)
+                d.cardinality = 1;
+            else if (d.cardinality!==1 && d.cardinality!==3)
+                throw new Error('Not supported yet. cardinality='+d.cardinality);
+
+            if (!d.optionality && d.optionality!==0)
+                d.optionality = 1;
+            else if (d.optionality!==1 && d.optionality!==0)
+                throw new Error('Not supported yet. optionality='+d.optionality);
+
+            return d;
+        });
     }
     /* **************************************************************** *
      *  Draw
@@ -65,24 +78,7 @@ export default class Port {
             to: to_point,
         };
     }
-    calX (d) {
-        let column_instance = d._column_instance;
-
-        if (d._class==='PORT-ER-OUT')
-            d.x = column_instance.x + column_instance._table.w;
-        else
-            d.x = column_instance.x * -1;
-
-        return d.x;
-    }
-    calY (d) {
-        let column_instance = d._column_instance;
-
-        d.y = column_instance.y + (column_instance.h/2) - 16;
-
-        return d.y;
-    }
-    draw (g) {
+    drawLine (g) {
         const lines = g.selectAll('line')
               .data((d) => { return d._ports ? d._ports : []; },
                     (d) => { return d._id; });
@@ -121,5 +117,247 @@ export default class Port {
             .attr("y2", d => d.line.to.y)
             .attr("stroke-width",3)
             .attr("stroke","#a3a3a2");
+    }
+    calOneLine (d, distance) {
+        const r = 11;
+
+        if (d.line.from.x===d.line.to.x) {
+            // 縦
+            if (d.line.from.y < d.line.to.y) { // (2)
+                return {
+                    from: { x:d.line.from.x + r, y:d.line.from.y + distance },
+                    to:   { x:d.line.from.x - r, y:d.line.from.y + distance },
+                };
+            } else if (d.line.from.y > d.line.to.y) { // (1)
+                return {
+                    from: { x:d.line.from.x + r, y:d.line.from.y - distance },
+                    to:   { x:d.line.from.x - r, y:d.line.from.y - distance },
+                };
+            }
+        } else if (d.line.from.y===d.line.to.y) {
+            // 横
+            if (d.line.from.x < d.line.to.x) { // (2)
+                return {
+                    from: { x:d.line.from.x + distance, y:d.line.from.y + r },
+                    to:   { x:d.line.from.x + distance, y:d.line.from.y - r },
+                };
+            } else if (d.line.from.x > d.line.to.x) { // (1)
+                return {
+                    from: { x:d.line.from.x - distance, y:d.line.from.y + r },
+                    to:   { x:d.line.from.x - distance, y:d.line.from.y - r },
+                };
+            }
+        }
+
+        return {
+            from: { x:0, y:0 },
+            to:   { x:0, y:0 },
+        };
+    };
+    calThreeLine (d, distance) {
+        const r = 11;
+
+        if (d.line.from.x===d.line.to.x) {
+            // 縦
+            if (d.line.from.y < d.line.to.y) {
+                return [
+                    [d.line.from.x - distance, d.line.from.y],
+                    [d.line.from.x,            d.line.from.y + distance],
+                    [d.line.from.x + distance, d.line.from.y],
+                ];
+            } else if (d.line.from.y > d.line.to.y) {
+                return [
+                    [d.line.from.x - distance, d.line.from.y],
+                    [d.line.from.x,            d.line.from.y - distance],
+                    [d.line.from.x + distance, d.line.from.y],
+                ];
+            }
+        } else if (d.line.from.y===d.line.to.y) {
+            // 横
+            if (d.line.from.x < d.line.to.x) {
+                return [
+                    [d.line.from.x,            d.line.from.y - distance],
+                    [d.line.from.x + distance, d.line.from.y],
+                    [d.line.from.x,            d.line.from.y + distance],
+                ];
+            } else if (d.line.from.x > d.line.to.x) {
+                return [
+                    [d.line.from.x,            d.line.from.y - distance],
+                    [d.line.from.x - distance, d.line.from.y],
+                    [d.line.from.x,            d.line.from.y + distance],
+                ];
+            }
+        }
+
+        return {
+            from: { x:0, y:0 },
+            to:   { x:0, y:0 },
+        };
+    };
+    calCircle (d) {
+        const distance = 22;
+
+        if (d.line.from.x===d.line.to.x) {
+            // 縦
+            if (d.line.from.y < d.line.to.y) { // (2)
+                return {
+                    x:d.line.from.x,
+                    y:d.line.from.y + distance,
+                };
+            } else if (d.line.from.y > d.line.to.y) { // (1)
+                return {
+                    x:d.line.from.x,
+                    y:d.line.from.y - distance,
+                };
+            }
+        } else if (d.line.from.y===d.line.to.y) {
+            // 横
+            if (d.line.from.x < d.line.to.x) { // (2)
+                return {
+                    x:d.line.from.x + distance,
+                    y:d.line.from.y
+                };
+            } else if (d.line.from.x > d.line.to.x) { // (1)
+                return {
+                    x:d.line.from.x - distance,
+                    y:d.line.from.y
+                };
+            }
+        }
+
+        return { x:0, y:0 };
+    };
+    drawCardinalityOne (g) {
+        const filter = (ports=[]) => {
+            return ports.filter(d => {
+                return d.cardinality===1;
+            });
+        };
+
+        const optionalities = g.selectAll('line.cardinality')
+              .data((d) => { return filter(d._ports); },
+                    (d) => { return d._id; });
+
+        optionalities
+            .attr("x1", d => d.line_cardinality.from.x)
+            .attr("y1", d => d.line_cardinality.from.y)
+            .attr("x2", d => d.line_cardinality.to.x)
+            .attr("y2", d => d.line_cardinality.to.y)
+            .attr("stroke-width",3)
+            .attr("stroke","#a3a3a2");
+
+        optionalities
+            .enter()
+            .each((d) => d.line_cardinality = this.calOneLine(d, 11))
+            .append('line')
+            .classed( "cardinality", true )
+            .attr("x1", d => d.line_cardinality.from.x)
+            .attr("y1", d => d.line_cardinality.from.y)
+            .attr("x2", d => d.line_cardinality.to.x)
+            .attr("y2", d => d.line_cardinality.to.y)
+            .attr("stroke-width",3)
+            .attr("stroke","#a3a3a2");
+    }
+    drawCardinalityThree (g) {
+        const filter = (ports=[]) => {
+            return ports.filter(d => {
+                return d.cardinality===3;
+            });
+        };
+
+        const optionalities = g.selectAll('path.cardinality')
+              .data((d) => { return filter(d._ports); },
+                    (d) => { return d._id; });
+
+        const line = d3.line()
+              .x(function(d) {return d[0];})
+              .y(function(d) {return d[1];});
+
+        optionalities
+            .each((d) => d.line_cardinality_three = this.calThreeLine(d, 11))
+            .attr('d', d => line(d.line_cardinality_three))
+            .attr("stroke-width",3)
+            .attr("stroke","#a3a3a2");
+
+        var c1 = [100,  90];
+        var c2 = [200, 120];
+        var c3 = [ 50, 100];
+        var carray = [c1, c2, c3];
+
+        optionalities
+            .enter()
+            .each((d) => d.line_cardinality_three = this.calThreeLine(d, 11))
+            .append('path')
+            .classed( "cardinality", true )
+            .attr('d', d => line(d.line_cardinality_three))
+            .attr("fill", 'none')
+            .attr("stroke-width",3)
+            .attr("stroke","#a3a3a2");
+    }
+    drawCardinality (g) {
+        // E1のインスタンス1つに対応する、E2のインスタンスの最大数
+        this.drawCardinalityOne(g);
+        this.drawCardinalityThree(g);
+    }
+    drawOptionalityOne (g) {
+        const filter = (ports=[]) => {
+            return ports.filter(d => d.optionality===1);
+        };
+
+        const optionalities = g.selectAll('line.optionality')
+              .data((d) => { return filter(d._ports); },
+                    (d) => { return d._id; });
+
+        optionalities
+            .enter()
+            .each((d) => d.line_optionality = this.calOneLine(d, 22))
+            .append('line')
+            .classed( "optionality", true )
+            .attr("x1", d => d.line_optionality.from.x)
+            .attr("y1", d => d.line_optionality.from.y)
+            .attr("x2", d => d.line_optionality.to.x)
+            .attr("y2", d => d.line_optionality.to.y)
+            .attr("stroke-width",3)
+            .attr("stroke","#a3a3a2");
+    }
+    drawOptionalityZero (g) {
+        const filter = (ports=[]) => {
+            return ports.filter(d => d.optionality===0);
+        };
+
+        const optionalities = g.selectAll('circle.optionality')
+              .data((d) => { return filter(d._ports); },
+                    (d) => { return d._id; });
+
+        optionalities
+            .each((d) => d.line_circle = this.calCircle(d))
+            .attr("cx", d => d.line_circle.x)
+            .attr("cy", d => d.line_circle.y)
+            .attr("r",5)
+            .attr("fill","#fefefe")
+            .attr("stroke-width",3)
+            .attr("stroke","#a3a3a2");
+
+        optionalities
+            .enter()
+            .each((d) => d.line_circle = this.calCircle(d))
+            .append("circle")
+            .classed( "optionality", true )
+            .attr("cx", d => d.line_circle.x)
+            .attr("cy", d => d.line_circle.y)
+            .attr("r",5)
+            .attr("fill","#fefefe")
+            .attr("stroke-width",3)
+            .attr("stroke","#a3a3a2");
+    }
+    drawOptionality (g) {
+        // E1のインスタンス1つに対応する、E2のインスタンスの最小数
+        this.drawOptionalityOne(g);
+        this.drawOptionalityZero(g);
+    }
+    draw (g) {
+        this.drawLine(g);
+        this.drawCardinality(g);
+        this.drawOptionality(g);
     }
 }
