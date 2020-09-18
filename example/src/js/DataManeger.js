@@ -25,10 +25,18 @@ export default class DataManeger {
                     column_instance._table = table_ht[from_id];
 
 
-                    if (!table_ht[k]._column_instances)
-                        table_ht[k]._column_instances = [];
+                    let table = table_ht[k];
+                    if (!table._column_instances)
+                        table._column_instances = [];
 
-                    table_ht[k]._column_instances.push(column_instance);
+                    const position = table._column_instances.findIndex(d => {
+                        return d._id===column_instance._id;
+                    });
+
+                    if (position==-1)
+                        table._column_instances.push(column_instance);
+                    else
+                        table._column_instances.splice(position, 1, column_instance);
                 }
         }
     }
