@@ -113,6 +113,9 @@ export default class D3ER {
     svgSize (w, h) {
         this.getSvg().size(w, h);
     }
+    focus () {
+        this.getSvg().focus();
+    }
     /* ******** */
     /*  Layers  */
     /* ******** */

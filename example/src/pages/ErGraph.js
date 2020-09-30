@@ -46,6 +46,7 @@ function ErGraph () {
         if(!last_effect)
             initD3er(d3er);
 
+        d3er.focus();
         d3er.data(ER_DATA);
 
         window.addEventListener('resize', () => {
@@ -57,14 +58,8 @@ function ErGraph () {
 
 
     return (
-        <div id='er-graph-container'
-             style={style.root}>
-
-          <svg id='er-graph'
-               style={style.graph}
-               width='1024px'
-               height='555px' />
-
+        <div id='er-graph-container' style={style.root}>
+          <svg id='er-graph' style={style.graph} />
         </div>
     );
 }
