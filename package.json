@@ -1,6 +1,6 @@
 {
     "name": "@yanqirenshi/d3.er",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "description": "",
     "main": "index.js",
     "scripts": {
@@ -19,7 +19,7 @@
     },
     "homepage": "https://github.com/yanqirenshi/D3.ER",
     "dependencies": {
-        "@yanqirenshi/d3.svg": "0.0.12",
+        "@yanqirenshi/d3.svg": "0.0.14",
         "d3": "^5.15.0"
     },
     "devDependencies": {
