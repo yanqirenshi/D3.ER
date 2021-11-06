@@ -4,6 +4,7 @@
 
 # dependencies
 node_modules
+dev/node_modules
 example/node_modules
 docs/node_modules
 example/.pnp
