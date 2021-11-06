@@ -133,12 +133,12 @@ export default class Entity {
                 if (resize_tables[table._id].max_w < w)
                     resize_tables[table._id].max_w = w;
 
-            }).on("click", (d) => {
+            }).on("click", (event, d) => {
                 this.callCallbak(this, 'header.click', d);
 
-                d3.event.stopPropagation();
-            }).on("dblclick", (d) => {
-                d3.event.stopPropagation();
+                event.stopPropagation();
+            }).on("dblclick", (event, d) => {
+                event.stopPropagation();
             });
     }
     drawBase (g) {
@@ -172,9 +172,9 @@ export default class Entity {
             .attr('x', (d) => { return d.x; })
             .attr('y', (d) => { return d.y; })
             .call(d3.drag()
-                  .on("start", (d) => { this.moveEntityStart(d); })
-                  .on("drag",  (d) => { this.moveEntity(d); })
-                  .on("end",   (d) => { this.moveEntityEnd(d); }));
+                  .on("start", (event, d) => { this.moveEntityStart(event, d); })
+                  .on("drag",  (event, d) => { this.moveEntity(event, d); })
+                  .on("end",   (event, d) => { this.moveEntityEnd(event, d); }));
     }
     move(tables) {
         let svg = this._place;
@@ -224,12 +224,12 @@ export default class Entity {
         this.drawBase(g);
 
         this.column.draw(g, this, {
-            click: (d) => {
+            click: (event, d) => {
                 this.callCallbak(this, 'columns.click', d);
-                d3.event.stopPropagation();
+                event.stopPropagation();
             },
-            dblclick: (d) => {
-                d3.event.stopPropagation();
+            dblclick: (event, d) => {
+                event.stopPropagation();
             }
         });
 
@@ -242,17 +242,17 @@ export default class Entity {
     /* **************************************************************** *
      *  Drag & Drop
      * **************************************************************** */
-    moveEntityStart (table) {
+    moveEntityStart (event, table) {
         table.drag = {
             start: {x: table.x, y:table.y}
         };
     }
-    moveEntity (table) {
-        table.x = Math.floor(table.x + d3.event.dx);
-        table.y = Math.floor(table.y + d3.event.dy);
+    moveEntity (event, table) {
+        table.x = Math.floor(table.x + event.dx);
+        table.y = Math.floor(table.y + event.dy);
         this.move([table]);
     }
-    moveEntityEnd (table) {
+    moveEntityEnd (event, table) {
         this.callCallbak(this, 'move.end', table);
         delete table.drag;
     }

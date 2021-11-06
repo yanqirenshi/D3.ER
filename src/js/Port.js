@@ -155,8 +155,6 @@ export default class Port {
         };
     };
     calThreeLine (d, distance) {
-        const r = 11;
-
         if (d.line.from.x===d.line.to.x) {
             // 縦
             if (d.line.from.y < d.line.to.y) {
@@ -278,11 +276,6 @@ export default class Port {
             .attr('d', d => line(d.line_cardinality_three))
             .attr("stroke-width",3)
             .attr("stroke","#a3a3a2");
-
-        var c1 = [100,  90];
-        var c2 = [200, 120];
-        var c3 = [ 50, 100];
-        var carray = [c1, c2, c3];
 
         optionalities
             .enter()

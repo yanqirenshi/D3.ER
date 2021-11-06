@@ -33,7 +33,7 @@ export default class DataManeger {
                         return d._id===column_instance._id;
                     });
 
-                    if (position==-1)
+                    if (position===-1)
                         table._column_instances.push(column_instance);
                     else
                         table._column_instances.splice(position, 1, column_instance);
