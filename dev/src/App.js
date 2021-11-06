@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import D3Er, { Rectum } from '@yanqirenshi/d3.er';
+import D3Er, { Rectum } from './lib/index.js';
 
 import ER_DATA from './data/ER_DATA.js';
 
