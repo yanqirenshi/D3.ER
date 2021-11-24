@@ -64,7 +64,8 @@ var Rectum = /*#__PURE__*/function (_Colon) {
       }, {
         id: 4,
         code: 'foreground'
-      }]
+      }],
+      transform: params.transform
     });
     _this.erdm = new _DataManeger["default"]();
     _this.relashonship = new _Relashonship["default"]();

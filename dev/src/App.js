@@ -4,7 +4,13 @@ import D3Er, { Rectum } from './lib/index.js';
 
 import ER_DATA from './data/ER_DATA.js';
 
-const rectum = new Rectum();
+const rectum = new Rectum({
+    transform: {
+        k: 1.0,
+        x: 0.0,
+        y: 0.0,
+    },
+});
 
 const style = {
     width: '100vw',
