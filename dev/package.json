@@ -6,7 +6,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
-    "@yanqirenshi/assh0le": "^0.2.8",
+    "@yanqirenshi/assh0le": "^0.2.12",
     "bulma": "^0.9.0",
     "deepmerge": "^4.2.2",
     "moment": "^2.27.0",
