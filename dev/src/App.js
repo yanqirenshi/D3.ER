@@ -4,20 +4,13 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import S from '@mui/material/Typography';
 
-import SectionObjectModel from './SectionObjectModel.js';
-import SectionDataModel from './SectionDataModel.js';
+import Graph from './Graph.js';
+import Tabs from './Tabs.js';
 
-import D3Er, { Rectum } from './lib/index.js';
-
-import ER_DATA from './data/ER_DATA.js';
-
-const rectum = new Rectum({
-    transform: {
-        k: 1.0,
-        x: 0.0,
-        y: 0.0,
-    },
-});
+import Overview from './Overview.js';
+import Models from './Models.js';
+import Views from './Views.js';
+import Classes from './Classes.js';
 
 const style = {
     width: '100vw',
@@ -26,36 +19,36 @@ const style = {
     flexDirection: 'column',
     alignItems: 'center',
     pt: 3,
-    graph_area: {
-        width:  800 + (22*2),
-        height: 300 + (22*2),
-        background: '#eee',
-        padding: 22,
-        borderRadius: 5,
-    },
 };
 
 function App() {
-    const [graph_data] = useState(ER_DATA);
+    const [tabs, setTabs] = React.useState({
+        selected: 'overview',
+        list: [
+            { code: 'overview', label: 'Overview' },
+            { code: 'classes',  label: 'Classes' },
+            { code: 'models',   label: 'Models' },
+            { code: 'views',    label: 'Views' },
+        ],
+    });
 
-    useEffect(()=> rectum.data(graph_data), [graph_data]);
+    const onChange = (new_tabs)=> setTabs(new_tabs);
 
     return (
         <Box sx={style}>
-          <Container maxWidth="lg" sx={{pb:22}}>
+          <Container maxWidth="md" sx={{pb:22}}>
             <Box>
-              <div style={style.graph_area}>
-                <D3Er rectum={rectum} />
-              </div>
+              <Graph/>
             </Box>
 
-            <Box sx={{mt:6}}>
-              <SectionObjectModel/>
+            <Box sx={{mt:2}}>
+              <Tabs tabs={tabs} onChange={onChange}/>
             </Box>
 
-            <Box sx={{mt:6}}>
-              <SectionDataModel/>
-            </Box>
+            {'overview'===tabs.selected && <Overview/>}
+            {'classes'===tabs.selected && <Classes/>}
+            {'models'===tabs.selected && <Models/>}
+            {'views'===tabs.selected && <Views/>}
           </Container>
         </Box>
     );
