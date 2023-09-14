@@ -3,32 +3,7 @@ import * as d3 from 'd3';
 
 import Geometry from './Geometry';
 
-export default class Port {
-    constructor () {
-        this.pool = new Pool();
-        this.geometry = new Geometry();
-    }
-    /* **************************************************************** *
-     *  Data manegement
-     * **************************************************************** */
-    build (list) {
-        return this.pool.list2pool(list, (d) => {
-            if (!d.cardinality)
-                d.cardinality = 1;
-            else if (d.cardinality!==1 && d.cardinality!==3)
-                throw new Error('Not supported yet. cardinality='+d.cardinality);
-
-            if (!d.optionality && d.optionality!==0)
-                d.optionality = 1;
-            else if (d.optionality!==1 && d.optionality!==0)
-                throw new Error('Not supported yet. optionality='+d.optionality);
-
-            return d;
-        });
-    }
-    /* **************************************************************** *
-     *  Draw
-     * **************************************************************** */
+class DataModel {
     calLinePoints (port) {
         const table = port._column_instance._table;
         const rect = {
@@ -77,46 +52,6 @@ export default class Port {
             from: from_point,
             to: to_point,
         };
-    }
-    drawLine (g) {
-        const lines = g.selectAll('line')
-              .data((d) => { return d._ports ? d._ports : []; },
-                    (d) => { return d._id; });
-
-        // delete
-        lines.exit().remove();
-
-        // update
-        lines
-            .each((d, i) => {
-                const line = this.calLinePoints(d);
-
-                d.position = line.to;
-                d.line = line;
-            })
-            .attr("x1", d => d.line.from.x)
-            .attr("y1", d => d.line.from.y)
-            .attr("x2", d => d.line.to.x)
-            .attr("y2", d => d.line.to.y)
-            .attr("stroke-width",3)
-            .attr("stroke","#a3a3a2");
-
-        // add
-        lines
-            .enter()
-            .each((d, i) => {
-                const line = this.calLinePoints(d);
-
-                d.position = line.to;
-                d.line = line;
-            })
-            .append("line")
-            .attr("x1", d => d.line.from.x)
-            .attr("y1", d => d.line.from.y)
-            .attr("x2", d => d.line.to.x)
-            .attr("y2", d => d.line.to.y)
-            .attr("stroke-width",3)
-            .attr("stroke","#a3a3a2");
     }
     calOneLine (d, distance) {
         const r = 11;
@@ -225,6 +160,76 @@ export default class Port {
 
         return { x:0, y:0 };
     };
+}
+
+export default class Port extends DataModel {
+    constructor () {
+        super();
+
+        this.pool = new Pool();
+        this.geometry = new Geometry();
+    }
+    /* **************************************************************** *
+     *  Data manegement
+     * **************************************************************** */
+    build (list) {
+        return this.pool.list2pool(list, (d) => {
+            if (!d.cardinality)
+                d.cardinality = 1;
+            else if (d.cardinality!==1 && d.cardinality!==3)
+                throw new Error('Not supported yet. cardinality='+d.cardinality);
+
+            if (!d.optionality && d.optionality!==0)
+                d.optionality = 1;
+            else if (d.optionality!==1 && d.optionality!==0)
+                throw new Error('Not supported yet. optionality='+d.optionality);
+
+            return d;
+        });
+    }
+    /* **************************************************************** *
+     *  Draw
+     * **************************************************************** */
+    drawLine (g) {
+        const lines = g.selectAll('line')
+              .data((d) => { return d._ports ? d._ports : []; },
+                    (d) => { return d._id; });
+
+        // delete
+        lines.exit().remove();
+
+        // update
+        lines
+            .each((d, i) => {
+                const line = this.calLinePoints(d);
+
+                d.position = line.to;
+                d.line = line;
+            })
+            .attr("x1", d => d.line.from.x)
+            .attr("y1", d => d.line.from.y)
+            .attr("x2", d => d.line.to.x)
+            .attr("y2", d => d.line.to.y)
+            .attr("stroke-width",3)
+            .attr("stroke","#a3a3a2");
+
+        // add
+        lines
+            .enter()
+            .each((d, i) => {
+                const line = this.calLinePoints(d);
+
+                d.position = line.to;
+                d.line = line;
+            })
+            .append("line")
+            .attr("x1", d => d.line.from.x)
+            .attr("y1", d => d.line.from.y)
+            .attr("x2", d => d.line.to.x)
+            .attr("y2", d => d.line.to.y)
+            .attr("stroke-width",3)
+            .attr("stroke","#a3a3a2");
+    }
     drawCardinalityOne (g) {
         const filter = (ports=[]) => {
             return ports.filter(d => {

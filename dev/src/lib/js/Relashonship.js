@@ -1,18 +1,9 @@
 import Pool from './Pool';
 
-export default class Relashonship {
-    constructor () {
-        this.pool = new Pool();
-    }
-    /* **************************************************************** *
-     *  Data manegement
-     * **************************************************************** */
-    build (list) {
-        return new Pool().list2poolWithIndex(list);
-    }
+class DataModel {
     checkClassOfFromTo (r) {
         return (r.from_class==='PORT-ER-OUT' || r.from_class==='PORT-ER-IN')
-            && (r.to_class==='PORT-ER-OUT' || r.to_class==='PORT-ER-IN');
+            && (r.to_class  ==='PORT-ER-OUT' || r.to_class  ==='PORT-ER-IN');
     }
     /** *************************************************************** *
      *
@@ -44,11 +35,23 @@ export default class Relashonship {
 
         table_to._edges.push(r);
     }
-    ///// ////////////////////////////////////////////////////////////////
-    /////
-    /////  Draw
-    /////
-    ///// ////////////////////////////////////////////////////////////////
+}
+
+export default class Relashonship extends DataModel {
+    constructor () {
+        super();
+
+        this.pool = new Pool();
+    }
+    /* **************************************************************** *
+     *  Data manegement
+     * **************************************************************** */
+    build (list) {
+        return new Pool().list2poolWithIndex(list);
+    }
+    /* **************************************************************** *
+     *  Draw
+     * **************************************************************** */
     drawCore (selection) {
         let val = (port, name) => {
             try {

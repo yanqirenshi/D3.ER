@@ -1,28 +1,24 @@
-import Pool from './Pool';
-
-export default class Column {
+class DataModel {
     constructor(param) {
         this._padding = param.padding ? param.padding : 0;
         this._values  = param.values;
-
-        this.pool = new Pool();
     }
-    /* **************************************************************** *
-     *  Data manegement
-     * **************************************************************** */
-    build (list) {
-        return new Pool().list2poolWithIndex(list);
-    }
-    /* **************************************************************** *
-     *  Draw
-     * **************************************************************** */
+    /**
+     * @scope protected
+     * */
     columnsWidth (d) {
         let padding = this._padding;
         return d.w - padding * 2;
     }
+    /**
+     * @scope protected
+     * */
     columnHeight () {
         return 22;
     }
+    /**
+     * @scope protected
+     * */
     columnsContentsHeight (d) {
         let column_height = this.columnHeight();
         let column_len = d._column_instances.length;
@@ -31,11 +27,26 @@ export default class Column {
 
         return contents_h;
     }
+    /**
+     * TODO: どこで使っている？
+     * @scope ??
+     * */
     columnsHeight (d) {
         let padding_top = 3;
         let padding_bottm = this._padding;
         return this.columnsContentsHeight(d) + padding_top + padding_bottm;
     }
+}
+
+export default class Column extends DataModel {
+    constructor(param) {
+        super(param);
+        
+        this._values  = param.values;
+    }
+    /**
+     * @scope protected
+     * */
     sortColumns (data) {
         let ids = [];
         let attributes = [];
@@ -59,6 +70,9 @@ export default class Column {
 
         return [].concat(ids, attributes, timestamps, others);
     }
+    /**
+     * @scope public
+     * */
     draw (g, table, callback) {
         let padding = this._padding;
 
@@ -122,6 +136,9 @@ export default class Column {
                 if (callback.dblclick) callback.dblclick(d);
             });
     }
+    /**
+     * @scope public
+     * */
     resize (g, table) {
         g.selectAll('rect.columns')
             .filter((d) => { return d._id===table._id; })
