@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import S from '@mui/material/Typography';
 
 import Graph from './Graph.js';
 import Tabs from './Tabs.js';

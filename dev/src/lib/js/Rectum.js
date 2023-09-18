@@ -2,8 +2,8 @@ import {Colon} from '@yanqirenshi/assh0le';
 
 import DataManeger from './DataManeger.js';
 
-import Entity from './Entity';
-import Relashonship from './Relashonship';
+import Entity from './painters/Entity';
+import Relashonship from './painters/Relashonship';
 
 export default class Rectum extends Colon {
     constructor (params) {
@@ -35,7 +35,7 @@ export default class Rectum extends Colon {
                 },
             },
         };
-
+        console.log(options);
         if (!options || !options.values)
             return default_values;
 
@@ -118,7 +118,7 @@ export default class Rectum extends Colon {
         return tables;
     }
     // TODO: 不要
-    setting () {}
+    // setting () {}
     draw () {
         const data = this.data();
 

@@ -1,8 +1,9 @@
-import Relashonship from './Relashonship';
 import Pool from './Pool';
-import Entity from './Entity';
-import Port from './Port';
-import ColumnInstance from './ColumnInstance.js';
+
+import Entity from './painters/Entity';
+import Port from './painters/Port';
+import ColumnInstance from './painters/ColumnInstance.js';
+import Relashonship from './painters/Relashonship';
 
 export default class DataManeger {
     constructor () {
@@ -79,25 +80,35 @@ export default class DataManeger {
         return new Pool().list2pool(out);
     }
     buldData (response) {
-        let relashonships    = this.relashonship.build(response.RELASHONSHIPS);
-        let tables           = this.table.build(response.TABLES);
-        let column_instances = this.column_instance.build(response.COLUMN_INSTANCES);
-        let ports            = this.port.build(response.PORTS);
+        const relashonships    = this.relashonship.build(response.RELASHONSHIPS);
+        const tables           = this.table.build(response.TABLES);
+        const column_instances = this.column_instance.build(response.COLUMN_INSTANCES);
+        const ports            = this.port.build(response.PORTS);
 
         this.injectTable2ColumnInstances(tables, column_instances, relashonships);
         this.injectColumnInstances2Ports (column_instances, ports, relashonships);
 
-        let edges = this.buildEdges(relashonships, ports);
+        const edges = this.buildEdges(relashonships, ports);
+
+        const columns = new Pool().list2pool(response.COLUMNS);
+
+        console.log({
+            columns:          columns,
+            tables:           tables,
+            column_instances: column_instances,
+            ports:            ports,
+            relashonships:    relashonships,
+            edges:            edges,
+        });
 
         return {
-            columns:          new Pool().list2pool(response.COLUMNS),
+            columns:          columns,
             tables:           tables,
             column_instances: column_instances,
             ports:            ports,
             relashonships:    relashonships,
             edges:            edges,
         };
-
     }
     /* **************************************************************** *
      *  Import Data (未実装)
