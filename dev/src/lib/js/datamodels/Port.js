@@ -11,16 +11,16 @@ export default class Port {
      * entity と port
      */
     calLinePoints (port) {
-        const table = port._column_instance._table;
+        const entity = port._column_instance._table;
 
         const rect = {
             position: {
-                x: table.x,
-                y: table.y,
+                x: entity.x,
+                y: entity.y,
             },
             size: {
-                w: table.w,
-                h: table.h,
+                w: entity.w,
+                h: entity.h,
             }
         };
 
