@@ -49,6 +49,9 @@ export default class Port extends DataModel {
             .attr("stroke-width",3)
             .attr("stroke","#a3a3a2");
     }
+    /* **************************************************************** *
+     *  Draw
+     * **************************************************************** */
     drawCardinalityOne (g) {
         const filter = (ports=[]) => {
             return ports.filter(d => {
@@ -70,7 +73,12 @@ export default class Port extends DataModel {
 
         optionalities
             .enter()
-            .each((d) => d.line_cardinality = this.calOneLine(d, 11))
+            .each((d) => {
+                const from = d.line.from;
+                const to   = d.line.to;
+
+                d.line_cardinality = this.calOneLine(from, to, 11);
+            })
             .append('line')
             .classed( "cardinality", true )
             .attr("x1", d => d.line_cardinality.from.x)
@@ -93,17 +101,28 @@ export default class Port extends DataModel {
 
         const line = d3.line()
               .x(function(d) {return d[0];})
+
               .y(function(d) {return d[1];});
 
         optionalities
-            .each((d) => d.line_cardinality_three = this.calThreeLine(d, 11))
+            .each((d) => {
+                const from = d.line.from;
+                const to   = d.line.to;
+
+                d.line_cardinality_three = this.calThreeLine(from, to, 11);
+            })
             .attr('d', d => line(d.line_cardinality_three))
             .attr("stroke-width",3)
             .attr("stroke","#a3a3a2");
 
         optionalities
             .enter()
-            .each((d) => d.line_cardinality_three = this.calThreeLine(d, 11))
+            .each((d) => {
+                const from = d.line.from;
+                const to   = d.line.to;
+
+                d.line_cardinality_three = this.calThreeLine(from, to, 11);
+            })
             .append('path')
             .classed( "cardinality", true )
             .attr('d', d => line(d.line_cardinality_three))
@@ -127,7 +146,12 @@ export default class Port extends DataModel {
 
         optionalities
             .enter()
-            .each((d) => d.line_optionality = this.calOneLine(d, 22))
+            .each((d) => {
+                const from = d.line.from;
+                const to   = d.line.to;
+
+                d.line_optionality = this.calOneLine(from, to, 22);
+            })
             .append('line')
             .classed( "optionality", true )
             .attr("x1", d => d.line_optionality.from.x)
@@ -147,7 +171,12 @@ export default class Port extends DataModel {
                     (d) => { return d._id; });
 
         optionalities
-            .each((d) => d.line_circle = this.calCircle(d))
+            .each((d) => {
+                const from = d.line.from;
+                const to   = d.line.to;
+
+                d.line_circle = this.calCircle(from, to);
+            })
             .attr("cx", d => d.line_circle.x)
             .attr("cy", d => d.line_circle.y)
             .attr("r",5)
@@ -157,7 +186,12 @@ export default class Port extends DataModel {
 
         optionalities
             .enter()
-            .each((d) => d.line_circle = this.calCircle(d))
+            .each((d) => {
+                const from = d.line.from;
+                const to   = d.line.to;
+
+                d.line_circle = this.calCircle(from, to);
+            })
             .append("circle")
             .classed( "optionality", true )
             .attr("cx", d => d.line_circle.x)
@@ -172,6 +206,9 @@ export default class Port extends DataModel {
         this.drawOptionalityOne(g);
         this.drawOptionalityZero(g);
     }
+    /* **************************************************************** *
+     *  draw
+     * **************************************************************** */
     draw (g) {
         this.drawLine(g);
         this.drawCardinality(g);
