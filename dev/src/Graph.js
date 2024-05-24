@@ -10,6 +10,20 @@ const rectum = new Rectum({
         x: 0.0,
         y: 0.0,
     },
+    callbacks: {
+        table: {
+            header: {
+                click: (d) => {
+                    console.log('Click header.!!!');
+                }
+            },
+            columns: {
+                click: (d) => {
+                    console.log('Click column.!!!');
+                }
+            },
+        }
+    }
 });
 
 const style = {
@@ -26,8 +40,8 @@ export default function Graph () {
     useEffect(()=> rectum.data(graph_data), [graph_data]);
 
     return (
-          <div style={style}>
-            <D3Er rectum={rectum} />
-          </div>
+        <div style={style}>
+          <D3Er rectum={rectum} />
+        </div>
     );
 }

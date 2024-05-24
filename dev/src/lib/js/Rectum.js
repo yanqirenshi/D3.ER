@@ -35,13 +35,15 @@ export default class Rectum extends Colon {
                 },
             },
         };
-        console.log(options);
+
         if (!options || !options.values)
             return default_values;
 
         return Object.assign({}, options.values);
     }
     initCallbacks (options) {
+        // TODO: 全般的に見直したいなぁ。
+
         let default_callbacks = {
             table: {
                 move: (table) => {
@@ -67,6 +69,12 @@ export default class Rectum extends Colon {
 
         if (!options || !options.callbacks)
             return default_callbacks;
+
+        if (options.callbacks.table) {
+            options.callbacks.table.move     = default_callbacks.table.move;
+            options.callbacks.table.move_end = default_callbacks.table.move_end;
+            options.callbacks.table.resize   = default_callbacks.table.resize;
+        }
 
         return options.callbacks;
     }
@@ -117,8 +125,6 @@ export default class Rectum extends Colon {
 
         return tables;
     }
-    // TODO: 不要
-    // setting () {}
     draw () {
         const data = this.data();
 

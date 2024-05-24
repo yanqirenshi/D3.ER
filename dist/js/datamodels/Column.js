@@ -10,60 +10,53 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-var Pool = exports["default"] = /*#__PURE__*/function () {
-  function Pool() {
-    _classCallCheck(this, Pool);
+var Column = exports["default"] = /*#__PURE__*/function () {
+  function Column(param) {
+    _classCallCheck(this, Column);
+    this._padding = param.padding ? param.padding : 0;
+    this._values = param.values;
   }
-  _createClass(Pool, [{
-    key: "list2pool",
-    value: function list2pool(list, builder) {
-      var ht = {};
-      if (builder) {
-        for (var i in list) {
-          var data = builder(list[i]);
-          ht[data._id] = data;
-        }
-      } else {
-        for (var _i in list) {
-          var _data = list[_i];
-          ht[_data._id] = _data;
-        }
-      }
-      return {
-        ht: ht,
-        list: list
-      };
+  /**
+   * @scope protected
+   * */
+  _createClass(Column, [{
+    key: "columnsWidth",
+    value: function columnsWidth(d) {
+      var padding = this._padding;
+      return d.w - padding * 2;
     }
+    /**
+     * @scope protected
+     * */
   }, {
-    key: "list2poolWithIndex",
-    value: function list2poolWithIndex(list) {
-      var ht = {};
-      var ht_from = {};
-      var ht_to = {};
-      for (var i in list) {
-        var data = list[i];
-        var _id = data._id;
-        var from_id = data.from_id;
-        var to_id = data.to_id;
+    key: "columnHeight",
+    value: function columnHeight() {
+      return 22;
+    }
+    /**
+     * @scope protected
+     * */
+  }, {
+    key: "columnsContentsHeight",
+    value: function columnsContentsHeight(d) {
+      var column_height = this.columnHeight();
+      var column_len = d._column_instances.length;
+      var contents_h = column_height * (column_len === 0 ? 1 : column_len);
+      // let padding = this._padding;
 
-        // _id
-        ht[_id] = data;
-
-        // from_id
-        if (!ht_from[from_id]) ht_from[from_id] = {};
-        ht_from[from_id][to_id] = data;
-
-        // to_id
-        if (!ht_to[to_id]) ht_to[to_id] = {};
-        ht_to[to_id][from_id] = data;
-      }
-      return {
-        ht: ht,
-        list: list,
-        from: ht_from,
-        to: ht_to
-      };
+      return contents_h;
+    }
+    /**
+     * TODO: どこで使っている？
+     * @scope ??
+     * */
+  }, {
+    key: "columnsHeight",
+    value: function columnsHeight(d) {
+      var padding_top = 3;
+      var padding_bottm = this._padding;
+      return this.columnsContentsHeight(d) + padding_top + padding_bottm;
     }
   }]);
-  return Pool;
+  return Column;
 }();

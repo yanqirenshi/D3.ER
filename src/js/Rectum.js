@@ -2,8 +2,8 @@ import {Colon} from '@yanqirenshi/assh0le';
 
 import DataManeger from './DataManeger.js';
 
-import Entity from './Entity';
-import Relashonship from './Relashonship';
+import Entity from './painters/Entity';
+import Relashonship from './painters/Relashonship';
 
 export default class Rectum extends Colon {
     constructor (params) {
@@ -42,6 +42,8 @@ export default class Rectum extends Colon {
         return Object.assign({}, options.values);
     }
     initCallbacks (options) {
+        // TODO: 全般的に見直したいなぁ。
+
         let default_callbacks = {
             table: {
                 move: (table) => {
@@ -67,6 +69,12 @@ export default class Rectum extends Colon {
 
         if (!options || !options.callbacks)
             return default_callbacks;
+
+        if (options.callbacks.table) {
+            options.callbacks.table.move     = default_callbacks.table.move;
+            options.callbacks.table.move_end = default_callbacks.table.move_end;
+            options.callbacks.table.resize   = default_callbacks.table.resize;
+        }
 
         return options.callbacks;
     }
@@ -117,8 +125,6 @@ export default class Rectum extends Colon {
 
         return tables;
     }
-    // TODO: 不要
-    setting () {}
     draw () {
         const data = this.data();
 

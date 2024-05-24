@@ -1,41 +1,14 @@
-import Pool from './Pool';
+import DataModel from '../datamodels/Column.js';
 
-export default class Column {
+export default class Column extends DataModel {
     constructor(param) {
-        this._padding = param.padding ? param.padding : 0;
+        super(param);
+
         this._values  = param.values;
-
-        this.pool = new Pool();
     }
-    /* **************************************************************** *
-     *  Data manegement
-     * **************************************************************** */
-    build (list) {
-        return new Pool().list2poolWithIndex(list);
-    }
-    /* **************************************************************** *
-     *  Draw
-     * **************************************************************** */
-    columnsWidth (d) {
-        let padding = this._padding;
-        return d.w - padding * 2;
-    }
-    columnHeight () {
-        return 22;
-    }
-    columnsContentsHeight (d) {
-        let column_height = this.columnHeight();
-        let column_len = d._column_instances.length;
-        let contents_h = column_height * ((column_len === 0) ? 1 : column_len);
-        // let padding = this._padding;
-
-        return contents_h;
-    }
-    columnsHeight (d) {
-        let padding_top = 3;
-        let padding_bottm = this._padding;
-        return this.columnsContentsHeight(d) + padding_top + padding_bottm;
-    }
+    /**
+     * @scope protected
+     * */
     sortColumns (data) {
         let ids = [];
         let attributes = [];
@@ -59,6 +32,9 @@ export default class Column {
 
         return [].concat(ids, attributes, timestamps, others);
     }
+    /**
+     * @scope public
+     * */
     draw (g, table, callback) {
         let padding = this._padding;
 
@@ -122,6 +98,9 @@ export default class Column {
                 if (callback.dblclick) callback.dblclick(d);
             });
     }
+    /**
+     * @scope public
+     * */
     resize (g, table) {
         g.selectAll('rect.columns')
             .filter((d) => { return d._id===table._id; })

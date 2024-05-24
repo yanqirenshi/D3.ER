@@ -1,4 +1,4 @@
-import Pool from './Pool';
+import Pool from '../Pool';
 
 export default class ColumnInstance {
     constructor () {
