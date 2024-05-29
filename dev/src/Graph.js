@@ -5,6 +5,7 @@ import D3Er, { Rectum } from './lib/index.js';
 import ER_DATA from './data/ER_DATA.js';
 
 const rectum = new Rectum({
+    grid: { draw: false },
     transform: {
         k: 1.0,
         x: 0.0,

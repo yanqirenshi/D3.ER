@@ -15,6 +15,7 @@ export default class Rectum extends Colon {
                 { id: 4, code: 'foreground' },
             ],
             transform: params.transform,
+            grid: params.grid,
         });
 
         this.erdm = new DataManeger();
