@@ -34,3 +34,10 @@ class Builder {
 const RELASHONSHIPS = new Builder().build(SEEDS);
 
 export default RELASHONSHIPS;
+
+
+// PORT-ER-OUT     PORT-ER-IN
+// COLUMN-INSTANCE PORT-ER-IN
+// COLUMN-INSTANCE PORT-ER-OUT
+// TABLE           COLUMN-INSTANCE
+// COLUMN          COLUMN-INSTANCE

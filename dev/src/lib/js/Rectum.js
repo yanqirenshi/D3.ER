@@ -98,6 +98,7 @@ export default class Rectum extends Colon {
 
         this.relashonship.draw(layer, edges);
     }
+    // entity._edges
     moveEdges (entities) {
         const layer = this.layer('relationships');
 
