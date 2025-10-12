@@ -27,20 +27,20 @@ const rectum = new Rectum({
     }
 });
 
-const style = {
-    width:  'calc(100vw - 66px)',
-    height: 444,
-    background: '#eee',
-    padding: 22,
-    borderRadius: 5,
-};
-
 export default function Graph () {
     const [graph_data] = React.useState(ER_DATA);
 
     React.useEffect(()=> rectum.data(graph_data), [graph_data]);
 
     fetchSchemas();
+
+    const style = {
+        width:  'calc(100% - 44px)',
+        height: 444,
+        background: '#eee',
+        padding: 22,
+        borderRadius: 5,
+    };
 
     return (
         <div style={style}>
@@ -52,17 +52,25 @@ export default function Graph () {
 async function fetchSchemas () {
     const urls = [
         'http://127.0.0.1:55555/schemas',
-        'http://127.0.0.1:55555/entities',
         'http://127.0.0.1:55555/columns',
+        'http://127.0.0.1:55555/entities',
         'http://127.0.0.1:55555/attributes',
     ];
 
     Promise.all(urls.map(url => fetch(url).then(res => res.json())))
-        .then(([schemas, columns, entities, attributes]) => {
-            console.log('schemas:', schemas);
-            console.log('columns:', columns);
-            console.log('entities:', entities);
-            console.log('attributes:', attributes);
+        .then(([_schemas, _columns, _entities, _attributes]) => {
+            const list2ht = (key, list)=> {
+                return list.reduce((ht, d)=> {
+                    ht[d[key]] = d;
+                    return ht;
+                }, {});
+            };
+
+            const schemas = list2ht('schema_id',_schemas);
+            const columns = list2ht('column_id',_columns);
+            const entities = list2ht('entity_id',_entities);
+
+            console.log(_attributes);
         })
         .catch(error => {
             console.error('Fetch error:', error);

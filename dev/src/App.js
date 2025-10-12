@@ -13,16 +13,6 @@ import Classes from './Classes.js';
 import Mysql2D3er from './Mysql2D3er.js';
 import API from './API.js';
 
-
-const style = {
-    width: '100%',
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    pt: 1,
-};
-
 function App() {
     const [tabs, setTabs] = React.useState({
         selected: 'overview',
@@ -38,24 +28,33 @@ function App() {
 
     const onChange = (new_tabs)=> setTabs(new_tabs);
 
+    const style = {
+        width: '100%',
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+    };
+
     return (
         <Box sx={style}>
           <Box>
             <Graph/>
           </Box>
 
-          <Container maxWidth="md" sx={{pb:22}}>
+          <Box sx={{mt:2}}>
+            <Tabs tabs={tabs} onChange={onChange}/>
+          </Box>
 
-            <Box sx={{mt:2}}>
-              <Tabs tabs={tabs} onChange={onChange}/>
-            </Box>
-            {'overview'===tabs.selected && <Overview/>}
-            {'mysql_2_d3.er'===tabs.selected && <Mysql2D3er/>}
-            {'api'===tabs.selected && <API/>}
-            {'classes'===tabs.selected && <Classes/>}
-            {'models'===tabs.selected && <Models/>}
-            {'views'===tabs.selected && <Views/>}
-          </Container>
+          <Box sx={{flexGrow:1, overflow:'auto', height:'100%'}}>
+            <Container maxWidth="md" sx={{p:2, pb:22}}>
+              {'overview'===tabs.selected && <Overview/>}
+              {'mysql_2_d3.er'===tabs.selected && <Mysql2D3er/>}
+              {'api'===tabs.selected && <API/>}
+              {'classes'===tabs.selected && <Classes/>}
+              {'models'===tabs.selected && <Models/>}
+              {'views'===tabs.selected && <Views/>}
+            </Container>
+          </Box>
         </Box>
     );
 }
