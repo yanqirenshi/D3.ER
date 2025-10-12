@@ -50,17 +50,21 @@ export default function Graph () {
 }
 
 async function fetchSchemas () {
-    fetch('http://127.0.0.1:55555/schemas')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTPエラー! ステータス: ${response.status}`);
-            }
-            return response.json(); // JSONとしてパース
-        })
-        .then(data => {
-            console.log('取得したデータ:', data);
+    const urls = [
+        'http://127.0.0.1:55555/schemas',
+        'http://127.0.0.1:55555/entities',
+        'http://127.0.0.1:55555/columns',
+        'http://127.0.0.1:55555/attributes',
+    ];
+
+    Promise.all(urls.map(url => fetch(url).then(res => res.json())))
+        .then(([schemas, columns, entities, attributes]) => {
+            console.log('schemas:', schemas);
+            console.log('columns:', columns);
+            console.log('entities:', entities);
+            console.log('attributes:', attributes);
         })
         .catch(error => {
-            console.error('エラーが発生しました:', error);
+            console.error('Fetch error:', error);
         });
 }

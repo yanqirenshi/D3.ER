@@ -9,21 +9,35 @@ pub async fn create(
     payload: web::Json<NewEvAttribute>,
 ) -> impl Responder {
     let body = payload.into_inner();
+    // フィールドをムーブして取り出し（Option は None で NULL 挿入）
+    let NewEvAttribute {
+        entity_id,
+        column_id,
+        name_logical,
+        name_physical,
+        description,
+        order,
+        is_not_null,
+        default_value,
+        is_auto_increment,
+    } = body;
 
     let exec_res = sqlx::query(
         r#"INSERT INTO ev_attribute (
                 entity_id, column_id,
                 name_logical, name_physical, description,
-                `order`, is_not_null
-            ) VALUES (?, ?, ?, ?, ?, ?, ?)"#,
+                `order`, is_not_null, default_value, is_auto_increment
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"#,
     )
-    .bind(body.entity_id)
-    .bind(body.column_id)
-    .bind(&body.name_logical)
-    .bind(&body.name_physical)
-    .bind(&body.description)
-    .bind(body.order)
-    .bind(body.is_not_null)
+    .bind(entity_id)
+    .bind(column_id)
+    .bind(name_logical)
+    .bind(name_physical)
+    .bind(description)
+    .bind(order)
+    .bind(is_not_null)
+    .bind(default_value)
+    .bind(is_auto_increment)
     .execute(pool.get_ref())
     .await;
 
@@ -43,7 +57,8 @@ pub async fn create(
     let created = sqlx::query_as::<_, EvAttribute>(
         r#"SELECT attributer_id, entity_id, column_id,
                   name_logical, name_physical, description,
-                  `order` as `order`, is_not_null
+                  `order` as `order`, is_not_null,
+                  default_value, is_auto_increment
             FROM ev_attribute WHERE attributer_id = ?"#,
     )
     .bind(id_i32)
@@ -58,4 +73,3 @@ pub async fn create(
         }
     }
 }
-

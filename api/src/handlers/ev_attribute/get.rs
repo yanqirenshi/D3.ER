@@ -8,7 +8,8 @@ pub async fn list(pool: web::Data<DbPool>) -> impl Responder {
     let res = sqlx::query_as::<_, EvAttribute>(
         r#"SELECT attributer_id, entity_id, column_id,
                   name_logical, name_physical, description,
-                  `order` as `order`, is_not_null
+                  `order` as `order`, is_not_null,
+                  default_value, is_auto_increment
             FROM ev_attribute
             ORDER BY attributer_id"#,
     )
@@ -33,7 +34,8 @@ pub async fn get_by_id(
     let row = sqlx::query_as::<_, EvAttribute>(
         r#"SELECT attributer_id, entity_id, column_id,
                   name_logical, name_physical, description,
-                  `order` as `order`, is_not_null
+                  `order` as `order`, is_not_null,
+                  default_value, is_auto_increment
             FROM ev_attribute
             WHERE attributer_id = ?"#,
     )
@@ -50,4 +52,3 @@ pub async fn get_by_id(
         }
     }
 }
-
