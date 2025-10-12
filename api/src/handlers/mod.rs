@@ -7,3 +7,4 @@ pub mod hdr_index;
 pub mod dtl_index;
 pub mod dtl_relationship;
 pub mod hdr_relationship;
+pub mod edges;

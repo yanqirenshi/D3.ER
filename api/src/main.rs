@@ -80,6 +80,7 @@ async fn main() -> std::io::Result<()> {
             .route("/th/schema-entities",                         web::get().to(handlers::th_schema_entity::list))
             .route("/th/schema-entities/{schema_id}.{entity_id}", web::get().to(handlers::th_schema_entity::get_by_id))
             .route("/th/schema-entities/{schema_id}.{entity_id}", web::post().to(handlers::th_schema_entity::create))
+            .route("/edges",                                      web::get().to(handlers::edges::list))
     })
         .bind((host.as_str(), port))?
         .run()

@@ -7,3 +7,4 @@ pub mod dtl_index;
 pub mod hdr_relationship;
 pub mod dtl_relationship;
 pub mod th_schema_entity;
+pub mod edges;
