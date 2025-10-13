@@ -51,6 +51,16 @@ export default function Mysql2D3er () {
               <S><pre>{index.join('\n')}</pre></S>
             </Box>
           </Box>
+
+          <Box sx={{mt:6}}>
+            <S variant="h6">
+              外部キー
+            </S>
+            <Box sx={{display:'flex'}}>
+              <S><pre>{fk1.join('\n')}</pre></S>
+              <S><pre>{fk2.join('\n')}</pre></S>
+            </Box>
+          </Box>
         </Box>
     );
 }
@@ -181,4 +191,38 @@ const index = [
     "     , IS_VISIBLE",
     "     , EXPRESSION",
     "  FROM information_schema.statistics",
+];
+
+// forign key
+const fk1 = [
+"SELECT t1.CONSTRAINT_CATALOG",
+"     , t1.CONSTRAINT_SCHEMA",
+"     , t1.CONSTRAINT_NAME",
+"     , t1.TABLE_CATALOG",
+"     , t1.TABLE_SCHEMA",
+"     , t1.TABLE_NAME",
+"     , t1.COLUMN_NAME",
+"     , t1.ORDINAL_POSITION",
+"     , t1.POSITION_IN_UNIQUE_CONSTRAINT",
+"     , t1.REFERENCED_TABLE_SCHEMA",
+"     , t1.REFERENCED_TABLE_NAME",
+"     , t1.REFERENCED_COLUMN_NAME",
+"  FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS t1",
+" WHERE t1.REFERENCED_TABLE_NAME IS NOT NULL",
+"   AND t1.TABLE_SCHEMA = 'er'",
+];
+
+const fk2 = [
+"SELECT t1.CONSTRAINT_SCHEMA",
+"     , t1.CONSTRAINT_NAME",
+"     , t1.TABLE_SCHEMA",
+"     , t1.TABLE_NAME",
+"     , t1.COLUMN_NAME",
+"     , t1.ORDINAL_POSITION",
+"     , t1.REFERENCED_TABLE_SCHEMA",
+"     , t1.REFERENCED_TABLE_NAME",
+"     , t1.REFERENCED_COLUMN_NAME",
+"  FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS t1",
+" WHERE t1.REFERENCED_TABLE_NAME IS NOT NULL",
+"   AND t1.TABLE_SCHEMA = 'er'",
 ];
