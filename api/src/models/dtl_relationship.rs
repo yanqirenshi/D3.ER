@@ -4,7 +4,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, sqlx::FromRow)]
 pub struct DtlRelationship {
     pub relationship_id: i32, // INT NOT NULL
-    pub attributer_id: i32,   // INT NOT NULL
+    pub attributer_id_from: i32, // INT NOT NULL
+    pub attributer_id_to: i32,   // INT NOT NULL
     pub description: String,  // TEXT NOT NULL
 }
 
@@ -12,7 +13,7 @@ pub struct DtlRelationship {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct NewDtlRelationship {
     pub relationship_id: i32,
-    pub attributer_id: i32,
+    pub attributer_id_from: i32,
+    pub attributer_id_to: i32,
     pub description: String,
 }
-

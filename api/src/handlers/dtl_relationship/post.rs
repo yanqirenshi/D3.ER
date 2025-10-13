@@ -12,11 +12,12 @@ pub async fn create(
 
     // 複合キーのため last_insert_id は使わない
     let exec_res = sqlx::query(
-        r#"INSERT INTO dtl_relationship (relationship_id, attributer_id, description)
-           VALUES (?, ?, ?)"#,
+        r#"INSERT INTO dtl_relationship (relationship_id, attributer_id_from, attributer_id_to, description)
+           VALUES (?, ?, ?, ?)"#,
     )
     .bind(body.relationship_id)
-    .bind(body.attributer_id)
+    .bind(body.attributer_id_from)
+    .bind(body.attributer_id_to)
     .bind(&body.description)
     .execute(pool.get_ref())
     .await;
@@ -27,12 +28,13 @@ pub async fn create(
     }
 
     let created = sqlx::query_as::<_, DtlRelationship>(
-        r#"SELECT relationship_id, attributer_id, description
+        r#"SELECT relationship_id, attributer_id_from, attributer_id_to, description
             FROM dtl_relationship
-            WHERE relationship_id = ? AND attributer_id = ?"#,
+            WHERE relationship_id = ? AND attributer_id_from = ? AND attributer_id_to = ?"#,
     )
     .bind(body.relationship_id)
-    .bind(body.attributer_id)
+    .bind(body.attributer_id_from)
+    .bind(body.attributer_id_to)
     .fetch_one(pool.get_ref())
     .await;
 
@@ -44,4 +46,3 @@ pub async fn create(
         }
     }
 }
-

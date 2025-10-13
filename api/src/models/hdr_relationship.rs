@@ -29,4 +29,3 @@ pub struct NewHdrRelationship {
     pub optionality_to: i32,
     pub description: String,
 }
-

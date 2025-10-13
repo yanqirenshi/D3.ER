@@ -6,9 +6,9 @@ use super::DbPool;
 // GET /dtl_relationships
 pub async fn list(pool: web::Data<DbPool>) -> impl Responder {
     let res = sqlx::query_as::<_, DtlRelationship>(
-        r#"SELECT relationship_id, attributer_id, description
+        r#"SELECT relationship_id, attributer_id_from, attributer_id_to, description
             FROM dtl_relationship
-            ORDER BY relationship_id, attributer_id"#,
+            ORDER BY relationship_id, attributer_id_from, attributer_id_to"#,
     )
     .fetch_all(pool.get_ref())
     .await;
@@ -22,19 +22,20 @@ pub async fn list(pool: web::Data<DbPool>) -> impl Responder {
     }
 }
 
-// GET /dtl_relationships/{relationship_id}/{attributer_id}
+// GET /dtl_relationships/{relationship_id}/{attributer_id_from}/{attributer_id_to}
 pub async fn get_by_id(
     pool: web::Data<DbPool>,
-    path: web::Path<(i32, i32)>,
+    path: web::Path<(i32, i32, i32)>,
 ) -> impl Responder {
-    let (relationship_id, attributer_id) = path.into_inner();
+    let (relationship_id, attributer_id_from, attributer_id_to) = path.into_inner();
     let row = sqlx::query_as::<_, DtlRelationship>(
-        r#"SELECT relationship_id, attributer_id, description
+        r#"SELECT relationship_id, attributer_id_from, attributer_id_to, description
             FROM dtl_relationship
-            WHERE relationship_id = ? AND attributer_id = ?"#,
+            WHERE relationship_id = ? AND attributer_id_from = ? AND attributer_id_to = ?"#,
     )
     .bind(relationship_id)
-    .bind(attributer_id)
+    .bind(attributer_id_from)
+    .bind(attributer_id_to)
     .fetch_optional(pool.get_ref())
     .await;
 
@@ -47,4 +48,3 @@ pub async fn get_by_id(
         }
     }
 }
-
