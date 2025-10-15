@@ -1,4 +1,4 @@
-CREATE TABLE `dtl_index` (
+CREATE TABLE `er`.`dtl_index` (
   `index_id` int NOT NULL,
   `attributer_id` int NOT NULL,
   `description` text NOT NULL,

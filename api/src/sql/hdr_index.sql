@@ -1,4 +1,4 @@
-CREATE TABLE `hdr_index` (
+CREATE TABLE `er`.`hdr_index` (
   `index_id` int NOT NULL AUTO_INCREMENT,
   `entity_id` int NOT NULL,
   `index_type` varchar(66) NOT NULL,

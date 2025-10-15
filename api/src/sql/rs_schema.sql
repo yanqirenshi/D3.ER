@@ -1,4 +1,4 @@
-CREATE TABLE `rs_schema` (
+CREATE TABLE `er`.`rs_schema` (
   `schema_id` int NOT NULL AUTO_INCREMENT,
   `name_logical` varchar(255) NOT NULL DEFAULT '?',
   `name_physical` varchar(255) NOT NULL DEFAULT '?',

@@ -1,4 +1,4 @@
-CREATE TABLE `hdr_relationship` (
+CREATE TABLE `er`.`hdr_relationship` (
   `relationship_id` int NOT NULL AUTO_INCREMENT,
   `entity_id_from` int NOT NULL,
   `entity_id_to` int NOT NULL,

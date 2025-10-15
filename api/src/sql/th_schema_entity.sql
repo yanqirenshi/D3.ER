@@ -1,4 +1,4 @@
-CREATE TABLE `th_schema_entity` (
+CREATE TABLE `er`.`th_schema_entity` (
   `schema_id` int NOT NULL,
   `entity_id` int NOT NULL,
   PRIMARY KEY (`schema_id`,`entity_id`)

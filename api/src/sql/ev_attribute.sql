@@ -1,4 +1,4 @@
-CREATE TABLE `ev_attribute` (
+CREATE TABLE `er`.`ev_attribute` (
   `attributer_id` int NOT NULL AUTO_INCREMENT,
   `entity_id` int NOT NULL,
   `column_id` int NOT NULL,

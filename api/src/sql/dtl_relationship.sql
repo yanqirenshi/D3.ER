@@ -1,4 +1,4 @@
-CREATE TABLE `dtl_relationship` (
+CREATE TABLE `er`.`dtl_relationship` (
   `relationship_id` int NOT NULL,
   `attributer_id_from` int NOT NULL,
   `attributer_id_to` int NOT NULL,
