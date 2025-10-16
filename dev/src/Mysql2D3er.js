@@ -18,7 +18,7 @@ export default function Mysql2D3er () {
               スキーマ
             </S>
             <S>
-              <pre>{schema.join('\n')}</pre>
+              <Sql value={schema}/>
             </S>
           </Box>
 
@@ -27,8 +27,9 @@ export default function Mysql2D3er () {
               テーブル
             </S>
             <Box sx={{display:'flex'}}>
-              <S><pre>{table1.join('\n')}</pre></S>
-              <S><pre>{table2.join('\n')}</pre></S>
+              <Sql value={table1}/>
+              <Sql value={table2}/>
+              <Sql value={table3}/>
             </Box>
           </Box>
 
@@ -37,9 +38,9 @@ export default function Mysql2D3er () {
               カラム
             </S>
             <Box sx={{display:'flex'}}>
-              <S><pre>{column1.join('\n')}</pre></S>
-              <S><pre>{column2.join('\n')}</pre></S>
-              <S><pre>{column3.join('\n')}</pre></S>
+              <Sql value={column1}/>
+              <Sql value={column2}/>
+              <Sql value={column3}/>
             </Box>
           </Box>
 
@@ -48,7 +49,7 @@ export default function Mysql2D3er () {
               インデックス
             </S>
             <Box sx={{display:'flex'}}>
-              <S><pre>{index.join('\n')}</pre></S>
+              <Sql value={index}/>
             </Box>
           </Box>
 
@@ -57,172 +58,245 @@ export default function Mysql2D3er () {
               外部キー
             </S>
             <Box sx={{display:'flex'}}>
-              <S><pre>{fk1.join('\n')}</pre></S>
-              <S><pre>{fk2.join('\n')}</pre></S>
+              <Sql value={fk1}/>
+              <Sql value={fk2}/>
             </Box>
           </Box>
         </Box>
     );
 }
 
+function Sql (props) {
+    const data = props.value;
+
+    return (
+        <Box sx={{p:1}}>
+          <S>
+            {data.label}
+          </S>
+          <S>
+            <pre>
+              {data.sql.join('\n')}
+            </pre>
+          </S>
+        </Box>
+    );
+}
+
 // スキーマ一覧
-const schema = [
-    'SELECT CATALOG_NAME',
-    '     , SCHEMA_NAME',
-    '     , DEFAULT_CHARACTER_SET_NAME',
-    '     , DEFAULT_COLLATION_NAME',
-    '     , SQL_PATH',
-    '     , DEFAULT_ENCRYPTION',
-    '  FROM information_schema.schemata;',
-];
+const schema = {
+    label: 'ALL',
+    sql: [
+        'SELECT CATALOG_NAME',
+        '     , SCHEMA_NAME',
+        '     , DEFAULT_CHARACTER_SET_NAME',
+        '     , DEFAULT_COLLATION_NAME',
+        '     , SQL_PATH',
+        '     , DEFAULT_ENCRYPTION',
+        '  FROM information_schema.schemata;',
+    ]
+};
 
 // テーブル一覧
-const table1 = [
-    "SELECT TABLE_CATALOG",
-    "     , TABLE_SCHEMA",
-    "     , TABLE_NAME",
-    "     , TABLE_TYPE",
-    "     , ENGINE",
-    "     , VERSION",
-    "     , ROW_FORMAT",
-    "     , TABLE_ROWS",
-    "     , AVG_ROW_LENGTH",
-    "     , DATA_LENGTH",
-    "     , MAX_DATA_LENGTH",
-    "     , INDEX_LENGTH",
-    "     , DATA_FREE",
-    "     , AUTO_INCREMENT",
-    "     , CREATE_TIME",
-    "     , UPDATE_TIME",
-    "     , CHECK_TIME",
-    "     , TABLE_COLLATION",
-    "     , CHECKSUM",
-    "     , CREATE_OPTIONS",
-    "     , TABLE_COMMENT",
-    "  FROM information_schema.tables",
-];
+const table1 = {
+    label: 'ALL',
+    sql: [
+        "SELECT TABLE_CATALOG",
+        "     , TABLE_SCHEMA",
+        "     , TABLE_NAME",
+        "     , TABLE_TYPE",
+        "     , ENGINE",
+        "     , VERSION",
+        "     , ROW_FORMAT",
+        "     , TABLE_ROWS",
+        "     , AVG_ROW_LENGTH",
+        "     , DATA_LENGTH",
+        "     , MAX_DATA_LENGTH",
+        "     , INDEX_LENGTH",
+        "     , DATA_FREE",
+        "     , AUTO_INCREMENT",
+        "     , CREATE_TIME",
+        "     , UPDATE_TIME",
+        "     , CHECK_TIME",
+        "     , TABLE_COLLATION",
+        "     , CHECKSUM",
+        "     , CREATE_OPTIONS",
+        "     , TABLE_COMMENT",
+        "  FROM information_schema.tables",
+    ]
+};
 
-const table2 = [
-    "SELECT TABLE_NAME",
-    "     , TABLE_SCHEMA",
-    "  FROM information_schema.tables",
-    " WHERE table_schema = 'er'",
-    "   AND TABLE_TYPE = 'BASE TABLE'",
-];
+const table2 = {
+    label: '2 Entity',
+    sql: [
+        "SELECT TABLE_NAME as name_logical",
+        "     , TABLE_NAME as name_physical",
+        "     , TABLE_COMMENT as description",
+        "     , 0 as position_x",
+        "     , 0 as position_y",
+        "     , 0 as position_z",
+        "     , 0 as size_w",
+        "     , 0 as size_h",
+        "  FROM information_schema.tables",
+        " WHERE table_schema = 'er';",
+    ]
+};
+
+const table3 = {
+    label: '2 Shcema-Entity',
+    sql: [
+        "SELECT TABLE_NAME",
+        "     , TABLE_SCHEMA",
+        "  FROM information_schema.tables",
+        " WHERE table_schema = 'er'",
+        "   AND TABLE_TYPE = 'BASE TABLE'",
+    ]
+};
 
 
 // カラム一覧
-const column1 = [
-    "SELECT TABLE_CATALOG",
-    "     , TABLE_SCHEMA",
-    "     , TABLE_NAME",
-    "     , COLUMN_NAME",
-    "     , ORDINAL_POSITION",
-    "     , COLUMN_DEFAULT",
-    "     , IS_NULLABLE",
-    "     , DATA_TYPE",
-    "     , CHARACTER_MAXIMUM_LENGTH",
-    "     , CHARACTER_OCTET_LENGTH",
-    "     , NUMERIC_PRECISION",
-    "     , NUMERIC_SCALE",
-    "     , DATETIME_PRECISION",
-    "     , CHARACTER_SET_NAME",
-    "     , COLLATION_NAME",
-    "     , COLUMN_TYPE",
-    "     , COLUMN_KEY",
-    "     , EXTRA",
-    "     , PRIVILEGES",
-    "     , COLUMN_COMMENT",
-    "     , GENERATION_EXPRESSION",
-    "     , SRS_ID",
-    "  FROM information_schema.columns;",];
+const column1 = {
+    label: 'ALL',
+    sql: [
+        "SELECT TABLE_CATALOG",
+        "     , TABLE_SCHEMA",
+        "     , TABLE_NAME",
+        "     , COLUMN_NAME",
+        "     , ORDINAL_POSITION",
+        "     , COLUMN_DEFAULT",
+        "     , IS_NULLABLE",
+        "     , DATA_TYPE",
+        "     , CHARACTER_MAXIMUM_LENGTH",
+        "     , CHARACTER_OCTET_LENGTH",
+        "     , NUMERIC_PRECISION",
+        "     , NUMERIC_SCALE",
+        "     , DATETIME_PRECISION",
+        "     , CHARACTER_SET_NAME",
+        "     , COLLATION_NAME",
+        "     , COLUMN_TYPE",
+        "     , COLUMN_KEY",
+        "     , EXTRA",
+        "     , PRIVILEGES",
+        "     , COLUMN_COMMENT",
+        "     , GENERATION_EXPRESSION",
+        "     , SRS_ID",
+        "  FROM information_schema.columns;",
+    ]
+};
 
-const column2 = [
-    "  SELECT COLUMN_TYPE",
-    "       , DATA_TYPE",
-    "       , CHARACTER_MAXIMUM_LENGTH",
-    "       , NUMERIC_PRECISION",
-    "       , NUMERIC_SCALE",
-    "    FROM information_schema.columns",
-    "   WHERE table_schema = 'er'",
-    "GROUP BY COLUMN_TYPE",
-    "       , DATA_TYPE",
-    "       , CHARACTER_MAXIMUM_LENGTH",
-    "       , NUMERIC_PRECISION",
-    "       , NUMERIC_SCALE",
-    "       , EXTRA",
-    "ORDER BY COLUMN_TYPE",
-    "       , DATA_TYPE",
-    "       , CHARACTER_MAXIMUM_LENGTH",
-    "       , NUMERIC_PRECISION",
-    "       , NUMERIC_SCALE",
-    "       , EXTRA",
-];
+const column2 = {
+    label: '2 Columns',
+    sql: [
+        " SELECT COLUMN_TYPE as name_logical",
+        "       , COLUMN_TYPE as name_physical",
+        "       , DATA_TYPE as value_type",
+        "       , CASE WHEN CHARACTER_MAXIMUM_LENGTH IS NULL",
+        "           THEN CONCAT(",
+        "                  IFNULL(NUMERIC_PRECISION,0),",
+        "                  '.',",
+        "                  IFNULL(NUMERIC_SCALE,0)",
+        "                )",
+        "           ELSE CHARACTER_MAXIMUM_LENGTH",
+        "         END as value_length",
+        "       , '' as description",
+        "    FROM information_schema.columns",
+        "   WHERE table_schema = 'er'",
+        "GROUP BY COLUMN_TYPE",
+        "       , DATA_TYPE",
+        "       , CHARACTER_MAXIMUM_LENGTH",
+        "       , NUMERIC_PRECISION",
+        "       , NUMERIC_SCALE",
+        "       , EXTRA",
+        "ORDER BY COLUMN_TYPE",
+        "       , DATA_TYPE",
+        "       , CHARACTER_MAXIMUM_LENGTH",
+        "       , NUMERIC_PRECISION",
+        "       , NUMERIC_SCALE",
+        "       , EXTRA",
+    ]
+};
 
-const column3 = [
-    "SELECT TABLE_SCHEMA",
-    "     , TABLE_NAME",
-    "     , COLUMN_DEFAULT",
-    "     , IS_NULLABLE",
-    "     , EXTRA",
-    "  FROM information_schema.columns",
-    " WHERE table_schema = 'er';",
-];
+const column3 = {
+    label: '2 Attributes',
+    sql: [
+        "SELECT TABLE_SCHEMA",
+        "     , TABLE_NAME as entity_id",
+        "     , COLUMN_NAME as column_id",
+        "     , COLUMN_NAME as name_logical",
+        "     , COLUMN_NAME as name_physical",
+        "     , '' as description",
+        "     , ORDINAL_POSITION as `order`",
+        "     , IS_NULLABLE='YES' as is_not_null",
+        "     , EXTRA='auto_increment' as is_auto_increment",
+        "     , COLUMN_DEFAULT as default_value",
+        "  FROM information_schema.columns",
+        " WHERE table_schema = 'er'",
+    ]
+};
 
 
 // インデックス
-const index = [
-    "SELECT TABLE_CATALOG",
-    "     , TABLE_SCHEMA",
-    "     , TABLE_NAME",
-    "     , NON_UNIQUE",
-    "     , INDEX_SCHEMA",
-    "     , INDEX_NAME",
-    "     , SEQ_IN_INDEX",
-    "     , COLUMN_NAME",
-    "     , COLLATION",
-    "     , CARDINALITY",
-    "     , SUB_PART",
-    "     , PACKED",
-    "     , NULLABLE",
-    "     , INDEX_TYPE",
-    "     , COMMENT",
-    "     , INDEX_COMMENT",
-    "     , IS_VISIBLE",
-    "     , EXPRESSION",
-    "  FROM information_schema.statistics",
-];
+const index = {
+    label: 'ALL',
+    sql: [
+        "SELECT TABLE_CATALOG",
+        "     , TABLE_SCHEMA",
+        "     , TABLE_NAME",
+        "     , NON_UNIQUE",
+        "     , INDEX_SCHEMA",
+        "     , INDEX_NAME",
+        "     , SEQ_IN_INDEX",
+        "     , COLUMN_NAME",
+        "     , COLLATION",
+        "     , CARDINALITY",
+        "     , SUB_PART",
+        "     , PACKED",
+        "     , NULLABLE",
+        "     , INDEX_TYPE",
+        "     , COMMENT",
+        "     , INDEX_COMMENT",
+        "     , IS_VISIBLE",
+        "     , EXPRESSION",
+        "  FROM information_schema.statistics",
+    ]
+};
 
 // forign key
-const fk1 = [
-"SELECT t1.CONSTRAINT_CATALOG",
-"     , t1.CONSTRAINT_SCHEMA",
-"     , t1.CONSTRAINT_NAME",
-"     , t1.TABLE_CATALOG",
-"     , t1.TABLE_SCHEMA",
-"     , t1.TABLE_NAME",
-"     , t1.COLUMN_NAME",
-"     , t1.ORDINAL_POSITION",
-"     , t1.POSITION_IN_UNIQUE_CONSTRAINT",
-"     , t1.REFERENCED_TABLE_SCHEMA",
-"     , t1.REFERENCED_TABLE_NAME",
-"     , t1.REFERENCED_COLUMN_NAME",
-"  FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS t1",
-" WHERE t1.REFERENCED_TABLE_NAME IS NOT NULL",
-"   AND t1.TABLE_SCHEMA = 'er'",
-];
+const fk1 = {
+    label: 'ALL',
+    sql: [
+        "SELECT t1.CONSTRAINT_CATALOG",
+        "     , t1.CONSTRAINT_SCHEMA",
+        "     , t1.CONSTRAINT_NAME",
+        "     , t1.TABLE_CATALOG",
+        "     , t1.TABLE_SCHEMA",
+        "     , t1.TABLE_NAME",
+        "     , t1.COLUMN_NAME",
+        "     , t1.ORDINAL_POSITION",
+        "     , t1.POSITION_IN_UNIQUE_CONSTRAINT",
+        "     , t1.REFERENCED_TABLE_SCHEMA",
+        "     , t1.REFERENCED_TABLE_NAME",
+        "     , t1.REFERENCED_COLUMN_NAME",
+        "  FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS t1",
+        " WHERE t1.REFERENCED_TABLE_NAME IS NOT NULL",
+        "   AND t1.TABLE_SCHEMA = 'er'",
+    ]
+};
 
-const fk2 = [
-"SELECT t1.CONSTRAINT_SCHEMA",
-"     , t1.CONSTRAINT_NAME",
-"     , t1.TABLE_SCHEMA",
-"     , t1.TABLE_NAME",
-"     , t1.COLUMN_NAME",
-"     , t1.ORDINAL_POSITION",
-"     , t1.REFERENCED_TABLE_SCHEMA",
-"     , t1.REFERENCED_TABLE_NAME",
-"     , t1.REFERENCED_COLUMN_NAME",
-"  FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS t1",
-" WHERE t1.REFERENCED_TABLE_NAME IS NOT NULL",
-"   AND t1.TABLE_SCHEMA = 'er'",
-];
+const fk2 = {
+    label: '???',
+    sql: [
+        "SELECT t1.CONSTRAINT_SCHEMA",
+        "     , t1.CONSTRAINT_NAME",
+        "     , t1.TABLE_SCHEMA",
+        "     , t1.TABLE_NAME",
+        "     , t1.COLUMN_NAME",
+        "     , t1.ORDINAL_POSITION",
+        "     , t1.REFERENCED_TABLE_SCHEMA",
+        "     , t1.REFERENCED_TABLE_NAME",
+        "     , t1.REFERENCED_COLUMN_NAME",
+        "  FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS t1",
+        " WHERE t1.REFERENCED_TABLE_NAME IS NOT NULL",
+        "   AND t1.TABLE_SCHEMA = 'er'",
+    ],
+};
