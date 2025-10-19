@@ -6,13 +6,20 @@ use super::DbPool;
 // GET /hdr_relationships
 pub async fn list(pool: web::Data<DbPool>) -> impl Responder {
     let res = sqlx::query_as::<_, HdrRelationship>(
-        r#"SELECT relationship_id,
-                  entity_id_from, entity_id_to,
-                  degree_from, cardinality_from, optionality_from,
-                  degree_to, cardinality_to, optionality_to,
-                  description
-            FROM hdr_relationship
-            ORDER BY relationship_id"#,
+        r#"SELECT relationship_id
+                , schema_id
+                , entity_id_from
+                , entity_id_to
+                , degree_from
+                , cardinality_from
+                , optionality_from
+                , degree_to
+                , cardinality_to
+                , optionality_to
+                , description
+             FROM hdr_relationship
+         ORDER BY relationship_id
+        "#,
     )
     .fetch_all(pool.get_ref())
     .await;
@@ -33,12 +40,18 @@ pub async fn get_by_id(
 ) -> impl Responder {
     let id = path.into_inner();
     let row = sqlx::query_as::<_, HdrRelationship>(
-        r#"SELECT relationship_id,
-                  entity_id_from, entity_id_to,
-                  degree_from, cardinality_from, optionality_from,
-                  degree_to, cardinality_to, optionality_to,
-                  description
-            FROM hdr_relationship
+        r#"SELECT relationship_id
+                , schema_id
+                , entity_id_from
+                , entity_id_to
+                , degree_from
+                , cardinality_from
+                , optionality_from
+                , degree_to
+                , cardinality_to
+                , optionality_to
+                , description
+             FROM hdr_relationship
             WHERE relationship_id = ?"#,
     )
     .bind(id)
@@ -54,4 +67,3 @@ pub async fn get_by_id(
         }
     }
 }
-

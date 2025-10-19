@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, sqlx::FromRow)]
 pub struct HdrIndex {
     pub index_id: i32,         // INT AUTO_INCREMENT PRIMARY KEY
+    pub schema_id: i32,        // INT NOT NULL
     pub entity_id: i32,        // INT NOT NULL
     pub index_type: String,    // VARCHAR(66) NOT NULL
     pub name_logical: String,  // VARCHAR(255) NOT NULL
@@ -13,9 +14,9 @@ pub struct HdrIndex {
 /// 新規作成用（AUTO_INCREMENT 主キーは含めない）
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct NewHdrIndex {
+    pub schema_id: i32,
     pub entity_id: i32,
     pub index_type: String,
     pub name_logical: String,
     pub name_physical: String,
 }
-

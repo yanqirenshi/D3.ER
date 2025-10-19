@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, sqlx::FromRow)]
 pub struct HdrRelationship {
     pub relationship_id: i32,  // INT NOT NULL（PK）
+    pub schema_id: i32,        // INT NOT NULL
     pub entity_id_from: i32,   // INT NOT NULL
     pub entity_id_to: i32,     // INT NOT NULL
     pub degree_from: f64,      // DOUBLE NOT NULL DEFAULT 0
@@ -19,6 +20,7 @@ pub struct HdrRelationship {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct NewHdrRelationship {
     pub relationship_id: i32,
+    pub schema_id: i32,
     pub entity_id_from: i32,
     pub entity_id_to: i32,
     pub degree_from: f64,

@@ -77,7 +77,7 @@ export default class Geometry {
             y: Math.floor(x * sin + y * cos),
         };
     }
-    getPortLine (port, rect) { // degree,
+    getPortLine (port, rect) {
         let from = this.getPortLineFrom(rect);
         let to   = this.getPortLineTo(port.degree, rect);
 

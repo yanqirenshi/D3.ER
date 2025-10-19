@@ -41,6 +41,7 @@ export default class Port {
 
         // point の位置を返す
         const to_point = cross_point.point;
+
         const from_point = ()=> {
             switch (cross_point.target) {
             case 'top':    return { x: to_point.x,       y: to_point.y + len };

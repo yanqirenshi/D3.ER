@@ -14,6 +14,7 @@ export default class Column extends DataModel {
         let attributes = [];
         let timestamps = [];
         let others = [];
+
         for (var i in data) {
             if (data[i].column_type==='ID')
                 ids.push(data[i]);
@@ -24,12 +25,14 @@ export default class Column extends DataModel {
             else
                 others.push(data[i]);
         }
-        let sorter = (a,b)=>{ return a._id - b._id; };
+
+        let sorter = (a,b)=> a.order < b.order ? -1 : 1;
+
         ids = ids.sort(sorter);
         attributes = attributes.sort(sorter);
         timestamps = timestamps.sort(sorter);
         others = others.sort(sorter);
-
+        console.log([ids, attributes, timestamps, others]);
         return [].concat(ids, attributes, timestamps, others);
     }
     /**

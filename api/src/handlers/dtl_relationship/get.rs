@@ -6,9 +6,16 @@ use super::DbPool;
 // GET /dtl_relationships
 pub async fn list(pool: web::Data<DbPool>) -> impl Responder {
     let res = sqlx::query_as::<_, DtlRelationship>(
-        r#"SELECT relationship_id, attributer_id_from, attributer_id_to, description
+        r#"
+          SELECT relationship_id
+               , attributer_id_from
+               , attributer_id_to
+               , description
             FROM dtl_relationship
-            ORDER BY relationship_id, attributer_id_from, attributer_id_to"#,
+        ORDER BY relationship_id
+               , attributer_id_from
+               , attributer_id_to
+        "#,
     )
     .fetch_all(pool.get_ref())
     .await;
@@ -29,9 +36,16 @@ pub async fn get_by_id(
 ) -> impl Responder {
     let (relationship_id, attributer_id_from, attributer_id_to) = path.into_inner();
     let row = sqlx::query_as::<_, DtlRelationship>(
-        r#"SELECT relationship_id, attributer_id_from, attributer_id_to, description
+        r#"
+          SELECT relationship_id
+               , attributer_id_from
+               , attributer_id_to
+               , description
             FROM dtl_relationship
-            WHERE relationship_id = ? AND attributer_id_from = ? AND attributer_id_to = ?"#,
+           WHERE relationship_id    = ?
+             AND attributer_id_from = ?
+             AND attributer_id_to   = ?
+        "#,
     )
     .bind(relationship_id)
     .bind(attributer_id_from)

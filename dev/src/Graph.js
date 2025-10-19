@@ -5,7 +5,7 @@ import D3Er, { Rectum } from './lib/index.js';
 import ER_DATA from './data/ER_DATA.js';
 
 import m from './maneger.js';
-console.log(ER_DATA);
+
 const rectum = new Rectum({
     grid: { draw: false },
     transform: {
@@ -17,7 +17,9 @@ const rectum = new Rectum({
         table: {
             header: {
                 click: (d) => {
-                    console.log('Click header.!!!');
+                    console.log(d);
+                    console.log(`update er.rs_entity set position_x=${d.x}, position_y=${d.y}, size_w=${d.w}, size_h=${d.h} where entity_id=${d._id}`);
+                    // console.log('Click header.!!!');
                 }
             },
             columns: {
@@ -42,7 +44,7 @@ export default function Graph () {
 
     const style = {
         width:  'calc(100% - 44px)',
-        height: 444,
+        height: 666,
         background: '#eee',
         padding: 22,
         borderRadius: 5,
@@ -66,17 +68,3 @@ function Contents (props) {
         <D3Er rectum={rectum} />
     );
 }
-
-// +------------------+      +------------------+     +------------------+     +------------------+
-// | COLUMNS          |      | COLUMN_INSTANCES |     | ENTITIES         |     | PORT             |
-// |==================|      |==================|     |==================|     |==================|
-// |- _id             |      |- _id             |     |- _id             |     | _id              |
-// |- _class          |      |- _class          |     |- _class          |     | _class           |
-// |+ code            |      |+ code            |     |+ code            |     | degree           |
-// |+ name            |      |+ physical_name   |     |+ name            |     | cardinality      |
-// |+ data_type       |      |+ logical_name    |     |+ description     |     | optionality      |
-// |------------------|      |+ data_type       |     |+ position        |     |------------------|
-// +------------------+      |+ column_type     |     |+ size            |     +------------------+
-//                           |+ description     |     |------------------|
-//                           |------------------|     +------------------+
-//                           +------------------+

@@ -6,7 +6,7 @@ use super::DbPool;
 // GET /hdr_indexes
 pub async fn list(pool: web::Data<DbPool>) -> impl Responder {
     let res = sqlx::query_as::<_, HdrIndex>(
-        r#"SELECT index_id, entity_id, index_type, name_logical, name_physical
+        r#"SELECT index_id, schema_id, entity_id, index_type, name_logical, name_physical
             FROM hdr_index
             ORDER BY index_id"#,
     )
@@ -29,7 +29,7 @@ pub async fn get_by_id(
 ) -> impl Responder {
     let id = path.into_inner();
     let row = sqlx::query_as::<_, HdrIndex>(
-        r#"SELECT index_id, entity_id, index_type, name_logical, name_physical
+        r#"SELECT index_id, schema_id, entity_id, index_type, name_logical, name_physical
             FROM hdr_index
             WHERE index_id = ?"#,
     )
@@ -46,4 +46,3 @@ pub async fn get_by_id(
         }
     }
 }
-

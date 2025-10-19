@@ -92,15 +92,6 @@ export default class DataManeger {
 
         const columns = new Pool().list2pool(response.COLUMNS);
 
-        console.log({
-            columns:          columns,
-            tables:           tables,
-            column_instances: column_instances,
-            ports:            ports,
-            relashonships:    relashonships,
-            edges:            edges,
-        });
-
         return {
             columns:          columns,
             tables:           tables,

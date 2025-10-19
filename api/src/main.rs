@@ -77,6 +77,7 @@ async fn main() -> std::io::Result<()> {
             .route("/relationships/{relationship_id}details",                          web::get().to(handlers::dtl_relationship::list))
             .route("/relationships/{relationship_id}details",                          web::post().to(handlers::dtl_relationship::create))
             .route("/relationships/{relationship_id}details/{relationship_detail_id}", web::get().to(handlers::dtl_relationship::get_by_id))
+            .route("/relationship-details", web::get().to(handlers::dtl_relationship::list))
             .route("/th/schema-entities",                         web::get().to(handlers::th_schema_entity::list))
             .route("/th/schema-entities/{schema_id}.{entity_id}", web::get().to(handlers::th_schema_entity::get_by_id))
             .route("/th/schema-entities/{schema_id}.{entity_id}", web::post().to(handlers::th_schema_entity::create))

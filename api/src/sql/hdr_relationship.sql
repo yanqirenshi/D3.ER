@@ -1,5 +1,6 @@
 CREATE TABLE `er`.`hdr_relationship` (
   `relationship_id` int NOT NULL AUTO_INCREMENT,
+  `schema_id` int NOT NULL DEFAULT '0',
   `entity_id_from` int NOT NULL,
   `entity_id_to` int NOT NULL,
   `name` varchar(255) NOT NULL DEFAULT '?',

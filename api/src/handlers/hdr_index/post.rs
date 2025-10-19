@@ -12,9 +12,10 @@ pub async fn create(
 
     let exec_res = sqlx::query(
         r#"INSERT INTO hdr_index (
-                entity_id, index_type, name_logical, name_physical
-            ) VALUES (?, ?, ?, ?)"#,
+                schema_id, entity_id, index_type, name_logical, name_physical
+            ) VALUES (?, ?, ?, ?, ?)"#,
     )
+    .bind(body.schema_id)
     .bind(body.entity_id)
     .bind(&body.index_type)
     .bind(&body.name_logical)
@@ -36,7 +37,7 @@ pub async fn create(
     };
 
     let created = sqlx::query_as::<_, HdrIndex>(
-        r#"SELECT index_id, entity_id, index_type, name_logical, name_physical
+        r#"SELECT index_id, schema_id, entity_id, index_type, name_logical, name_physical
             FROM hdr_index WHERE index_id = ?"#,
     )
     .bind(id_i32)
@@ -51,4 +52,3 @@ pub async fn create(
         }
     }
 }
-

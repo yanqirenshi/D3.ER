@@ -14,13 +14,15 @@ pub async fn create(
     let exec_res = sqlx::query(
         r#"INSERT INTO hdr_relationship (
                 relationship_id,
+                schema_id,
                 entity_id_from, entity_id_to,
                 degree_from, cardinality_from, optionality_from,
                 degree_to, cardinality_to, optionality_to,
                 description
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"#,
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"#,
     )
     .bind(body.relationship_id)
+    .bind(body.schema_id)
     .bind(body.entity_id_from)
     .bind(body.entity_id_to)
     .bind(body.degree_from)
@@ -40,6 +42,7 @@ pub async fn create(
 
     let created = sqlx::query_as::<_, HdrRelationship>(
         r#"SELECT relationship_id,
+                  schema_id,
                   entity_id_from, entity_id_to,
                   degree_from, cardinality_from, optionality_from,
                   degree_to, cardinality_to, optionality_to,
@@ -58,4 +61,3 @@ pub async fn create(
         }
     }
 }
-
