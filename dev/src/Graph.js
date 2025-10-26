@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Box from '@mui/material/Box';
+
 import D3Er, { Rectum } from './lib/index.js';
 
 import ER_DATA from './data/ER_DATA.js';
@@ -43,19 +45,20 @@ export default function Graph () {
     }, [er_data]);
 
     const style = {
-        width:  'calc(100% - 44px)',
-        height: 666,
+        width:  '100%',
+        height: '100%',
         background: '#eee',
         padding: 22,
         borderRadius: 5,
+        boxSizing: 'border-box',
     };
 
     if (!er_data) return null;
 
     return (
-        <div style={style}>
+        <Box style={style}>
           <Contents value={er_data}/>
-        </div>
+        </Box>
     );
 }
 

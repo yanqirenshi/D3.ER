@@ -2,7 +2,6 @@ import React from 'react';
 
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import Measure from 'react-measure';
 
 import Graph from './Graph.js';
 import Tabs from './Tabs.js';
@@ -16,9 +15,8 @@ import API from './API.js';
 
 function App() {
     const [tabs, setTabs] = React.useState({
-        selected: 'graph',
+        selected: 'overview',
         list: [
-            { code: 'graph',         label: 'Graph' },
             { code: 'overview',      label: 'Overview' },
             { code: 'mysql_2_d3.er', label: 'MySQL 2 D3.ER' },
             { code: 'api',           label: 'API' },
@@ -27,7 +25,6 @@ function App() {
             { code: 'views',         label: 'Views' },
         ],
     });
-    const [bounds, setBounds] = React.useState({height:0});
 
     const onChange = (new_tabs)=> setTabs(new_tabs);
 
@@ -40,25 +37,23 @@ function App() {
 
     return (
         <Box sx={style}>
-          <Measure bounds onResize={v => setBounds(v.bounds)}>
-            {({ measureRef }) => (
-                <Box sx={{p:1}}  ref={measureRef}>
-                  <Tabs tabs={tabs} onChange={onChange}/>
-                </Box>
-            )}
-          </Measure>
+          <Box>
+            <Graph/>
+          </Box>
 
-          <Box sx={{
-              width: '100%',
-              height: `calc(100% - ${bounds.height}px)`,
-          }}>
-            {'graph'===tabs.selected         && <Graph/>}
-            {'overview'===tabs.selected      && <Overview/>}
-            {'mysql_2_d3.er'===tabs.selected && <Mysql2D3er/>}
-            {'api'===tabs.selected           && <API/>}
-            {'classes'===tabs.selected       && <Classes/>}
-            {'models'===tabs.selected        && <Models/>}
-            {'views'===tabs.selected         && <Views/>}
+          <Box sx={{mt:2}}>
+            <Tabs tabs={tabs} onChange={onChange}/>
+          </Box>
+
+          <Box sx={{flexGrow:1, overflow:'auto', height:'100%'}}>
+            <Container maxWidth="md" sx={{p:2, pb:22}}>
+              {'overview'===tabs.selected && <Overview/>}
+              {'mysql_2_d3.er'===tabs.selected && <Mysql2D3er/>}
+              {'api'===tabs.selected && <API/>}
+              {'classes'===tabs.selected && <Classes/>}
+              {'models'===tabs.selected && <Models/>}
+              {'views'===tabs.selected && <Views/>}
+            </Container>
           </Box>
         </Box>
     );
